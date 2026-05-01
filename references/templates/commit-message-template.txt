@@ -1,0 +1,20 @@
+<type>: <node-id> <short summary>
+
+Hypothesis:
+
+Change:
+
+Validation:
+
+Result:
+
+Failure classification:
+
+Reflection:
+
+Next:
+
+Related files:
+- .agent/current-plan.md
+- .agent/decision-tree.md
+- .agent/experiment-log.md

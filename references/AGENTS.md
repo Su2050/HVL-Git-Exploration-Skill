@@ -1,0 +1,174 @@
+# AGENTS.md — HVL Git State Machine Protocol
+
+This repository uses the **Hypothesis Verification Loop with Git as External State Machine**.
+
+When solving complex tasks, do not behave like a one-shot code generator. Behave like an expert investigator.
+
+## When to use full HVL-Git
+
+Use the full protocol when the task is exploratory, research-like, risky, multi-step, or has no standard answer. Typical triggers:
+
+- scientific or engineering research;
+- reinforcement learning, robotics, embodied AI, simulation training;
+- meta-learning, AutoML, algorithm exploration;
+- complex system design, AIoT, video analytics, cloud-edge systems;
+- complex debugging, root-cause analysis, performance or reliability work;
+- multiple plausible approaches must be compared;
+- failure reasons may be ambiguous;
+- results must survive context compression or handoff.
+
+Use lightweight mode for medium tasks: keep `.agent/current-plan.md`, `.agent/experiment-log.md`, a Git checkpoint, and validation evidence.
+
+Do not use the full protocol for simple deterministic edits unless the user explicitly asks.
+
+## Core protocol
+
+Behave like an expert investigator:
+
+1. State the goal and success criteria.
+2. Convert each solution into an explicit hypothesis.
+3. Create a Git checkpoint before risky changes.
+4. Use a dedicated branch or commit for each hypothesis.
+5. Make one conceptual change at a time.
+6. Validate with tests, logs, runtime checks, artifact inspection, training metrics, simulation results, benchmark results, or clearly stated manual checks.
+7. Record the hypothesis, change, evidence, result, and reflection in `.agent/experiment-log.md`.
+8. If validation fails, classify the failure before continuing.
+9. Decide whether to retry the current node, switch to a sibling hypothesis, split the problem, or backtrack to a parent checkpoint.
+10. Keep `.agent/handoff.md` updated so another AI or human can continue after context compression.
+
+## Required files
+
+Use these files as persistent memory:
+
+```text
+.agent/project-fit.md
+.agent/current-plan.md
+.agent/decision-tree.md
+.agent/assumptions.md
+.agent/experiment-log.md
+.agent/validation.md
+.agent/handoff.md
+.agent/risk-register.md
+```
+
+If they do not exist, create them.
+
+## Git rules
+
+Use Git as the external state machine.
+
+Before any risky or multi-step change:
+
+```bash
+git status
+```
+
+If the current state is stable, create a checkpoint commit:
+
+```bash
+git add -A
+git commit -m "checkpoint: stable state before <task>"
+```
+
+For each non-trivial hypothesis, create a dedicated branch:
+
+```bash
+git checkout -b hvl/<node-id>-<short-hypothesis-name>
+```
+
+Each commit should contain one conceptual change and include:
+
+```text
+Hypothesis:
+Change:
+Validation:
+Result:
+Reflection:
+Next:
+```
+
+## Research / ML / RL rules
+
+For scientific research, ML, RL, robotics, simulation, or meta-learning tasks:
+
+1. Use Git branches for conceptual hypotheses, not for every seed or hyperparameter run.
+2. Use experiment trackers, logs, notebooks, or structured files for concrete runs, seeds, metrics, curves, videos, checkpoints, and artifacts.
+3. Record environment version, data/scenario version, reward/config changes, observation/action changes, seeds, metrics, and failure modes.
+4. Treat noisy or one-seed results as inconclusive unless the validation plan says otherwise.
+5. Do not claim algorithmic success without baseline comparison and enough evidence for the task context.
+
+## Failure classification
+
+When validation fails, do not blindly patch again. First classify the failure:
+
+1. **Execution error** — the hypothesis might be valid, but the implementation was wrong.
+2. **Wrong hypothesis** — the implementation was faithful, but evidence contradicts the hypothesis.
+3. **Missing prerequisite** — a dependency, environment, data, permission, or API condition is absent.
+4. **Invalid validation method** — the test/log/check does not actually measure the target behavior.
+5. **Unrelated regression** — the change exposed or introduced a separate issue.
+6. **Ambiguous evidence** — the result is not strong enough to decide.
+7. **Randomness / insufficient statistical confidence** — especially relevant to training and simulation tasks.
+8. **Simulation-real gap** — especially relevant to robotics, embodied AI, and industrial tasks.
+
+Then choose one action:
+
+- retry current node with a corrected implementation;
+- switch to sibling hypothesis;
+- split the hypothesis into smaller sub-hypotheses;
+- backtrack to a parent checkpoint;
+- redesign the validation method;
+- ask for missing external information only if the task cannot proceed safely without it.
+
+## Backtracking rules
+
+A failed attempt is not automatically useless. Preserve useful evidence.
+
+Before abandoning a branch:
+
+1. Update `.agent/experiment-log.md`.
+2. Update `.agent/decision-tree.md` with the result.
+3. Record why the branch is being abandoned.
+4. Preserve the Git commit or branch unless it contains dangerous/secrets/private data.
+5. Return to the correct parent checkpoint or sibling branch.
+
+## Context compression survival
+
+At any natural pause, update `.agent/handoff.md` with:
+
+- current goal;
+- current branch;
+- current decision node;
+- validated facts;
+- failed hypotheses;
+- active hypothesis;
+- next concrete step;
+- commands already run;
+- known risks;
+- for research tasks: latest run IDs, metrics, artifacts, and inconclusive evidence.
+
+The next AI should be able to continue using only repository files and Git history.
+
+## Prohibited behavior
+
+Do not:
+
+- mix multiple unrelated hypotheses in one commit;
+- continue after failed validation without classifying the failure;
+- delete failed experiments without recording why;
+- claim success without evidence;
+- rely only on chat context for important decisions;
+- make large risky changes on `main` without a checkpoint;
+- hide uncertainty when evidence is weak;
+- treat a single noisy training run as final proof.
+
+## Minimal command helpers
+
+This project includes a helper script:
+
+```bash
+python3 scripts/hvl.py init
+python3 scripts/hvl.py status
+python3 scripts/hvl.py start --node N1 --title "Fix login timeout" --hypothesis "The timeout is caused by stale token refresh state"
+python3 scripts/hvl.py record --node N1 --hypothesis "..." --changes "..." --validation "pytest ..." --result fail --reflection "..." --next "Try sibling hypothesis B"
+python3 scripts/hvl.py checkpoint --message "checkpoint: validated token refresh fix" --all
+```
