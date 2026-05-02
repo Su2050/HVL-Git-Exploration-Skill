@@ -1,13 +1,13 @@
 ---
 name: hvl-git-exploration
-description: Use this skill for exploratory, research-like, risky, multi-step, debugging-heavy, simulation/training-heavy, performance, ML/RL, robotics, AutoML, meta-learning, or complex system tasks where there is no fixed answer and progress must be made through prior-art research, hypotheses, experiments, logs, tests, metrics, benchmarks, simulation results, or manual acceptance. It turns Codex into an HVL-Git research-grade exploration agent using global prior art, .agent memory files, Git checkpoints, validation evidence, failure classification, deliberate backtracking, and persistence until success criteria are met or a real stop condition is reached.
+description: Use this skill for exploratory, research-like, risky, multi-step, debugging-heavy, simulation/training-heavy, performance, ML/RL, robotics, AutoML, meta-learning, or complex system tasks where there is no fixed answer and progress must be made through appropriately scoped prior-art research, hypotheses, experiments, logs, tests, metrics, benchmarks, simulation results, or manual acceptance. It turns Codex into an HVL-Git research-grade exploration agent using research triage, optional global prior art, .agent memory files, Git checkpoints, validation evidence, failure classification, deliberate backtracking, and persistence until success criteria are met or a real stop condition is reached.
 ---
 
 # HVL Git Exploration
 
 ## Core Idea
 
-Treat every non-trivial solution as a hypothesis grounded in the best available prior art. Use Git as the external state machine, `.agent/*` files as durable reasoning memory, and tests/logs/metrics/artifacts/manual checks as evidence.
+Treat every non-trivial solution as a hypothesis grounded in the best available evidence. Use Git as the external state machine, `.agent/*` files as durable reasoning memory, and tests/logs/metrics/artifacts/manual checks as evidence.
 
 Use this skill when the task is closer to exploration than direct implementation: no standard answer, multiple plausible paths, ambiguous failures, noisy feedback, long-running experiments, or handoff risk.
 
@@ -35,9 +35,18 @@ If not done, what is the next experiment and why am I not running it now?
 
 If the answer is "not done" and no stop condition applies, choose the next experiment and continue.
 
-## Prior-Art Scouting Contract
+## Research Triage
 
-For research-like, algorithmic, architecture, ML/RL, robotics, simulation, performance, reliability, or complex debugging tasks, do prior-art scouting before forming the main hypothesis tree. Search beyond exact keyword matches:
+Do not perform external prior-art scouting for every task. First classify the research need:
+
+- **R0 - No scouting**: simple deterministic edit, user gave an exact implementation path, local code context is enough, mature standard solution is obvious, low risk, or the user says not to search.
+- **R1 - Lightweight context check**: medium task where local docs, repo history, existing tests, or user-provided sources are enough. No broad web/paper search by default.
+- **R2 - Targeted prior-art scan**: ambiguous failure, multiple plausible approaches, architecture/performance/reliability decision, niche API behavior, or likely recent external knowledge. Check a small number of high-signal sources.
+- **R3 - Deep research survey**: scientific/engineering research, ML/RL, robotics, simulation, AutoML, meta-learning, benchmark design, SOTA comparison, or costly/high-risk exploration. Build a research packet before coding.
+
+Use the smallest level that can safely answer the task. If the user is explicit about what to build and the path is clear, stay at R0/R1 and execute. If repeated experiments fail, evidence stays ambiguous, or validation seems weak, escalate one level.
+
+For R2/R3, search beyond exact keyword matches:
 
 - same goal or metric;
 - same failure mode;
@@ -52,9 +61,9 @@ Use the strongest available sources first:
 - **P2**: issues, discussions, forum posts, failure reports, informal experience.
 - **P3**: analogies inferred by the agent. Mark these as speculative and validate locally.
 
-Record what was found in `.agent/source-ledger.md` and synthesize it in `.agent/prior-art-map.md`. Convert useful findings into `.agent/hypothesis-backlog.md`. Prior art is a source of candidate hypotheses, baselines, validation methods, and failure modes; it is not final proof.
+For R2/R3, record what was found in `.agent/source-ledger.md` and synthesize it in `.agent/prior-art-map.md`. Convert useful findings into `.agent/hypothesis-backlog.md`. Prior art is a source of candidate hypotheses, baselines, validation methods, and failure modes; it is not final proof.
 
-Before coding, prepare a compact research packet:
+For R3, prepare a compact research packet before coding:
 
 ```text
 Research question:
@@ -68,7 +77,7 @@ Open gaps:
 Experiment candidates:
 ```
 
-If repeated experiments fail, evidence stays ambiguous, or validation seems weak, return to prior-art scouting before continuing.
+For R0/R1, do not delay implementation with broad research. Record the triage reason briefly when using standard or research mode.
 
 ## Mode Selection
 
@@ -76,7 +85,7 @@ Choose the smallest useful mode:
 
 - **Lightweight**: one `.agent/current-plan.md`, one `.agent/experiment-log.md`, one validation signal, and a Git checkpoint plan.
 - **Standard**: add `.agent/project-fit.md`, `.agent/source-ledger.md`, `.agent/prior-art-map.md`, `.agent/hypothesis-backlog.md`, `.agent/decision-tree.md`, `.agent/assumptions.md`, `.agent/validation.md`, `.agent/handoff.md`, and `.agent/risk-register.md`.
-- **Research**: standard mode plus deeper prior-art scouting and experiment tracking discipline for baselines, seeds, configs, metrics, curves, artifacts, videos, datasets, scenario versions, and statistical confidence.
+- **Research**: standard mode plus R2/R3 research triage, prior-art scouting when needed, and experiment tracking discipline for baselines, seeds, configs, metrics, curves, artifacts, videos, datasets, scenario versions, and statistical confidence.
 
 Prefer research mode for ML/RL, robotics, simulation, meta-learning, AutoML, benchmark design, and scientific/engineering research.
 
@@ -85,7 +94,7 @@ Prefer research mode for ML/RL, robotics, simulation, meta-learning, AutoML, ben
 1. State the goal, success criteria, known constraints, and strongest available validation signal.
 2. Define the completion gate: what evidence proves the task is done, and what stop conditions would justify pausing.
 3. Decide lightweight / standard / research mode and record the reason in `.agent/project-fit.md` when using standard or research mode.
-4. For standard or research mode, scout prior art and record sources, method families, reusable baselines, failure modes, and candidate hypotheses.
+4. Apply research triage. Use R0/R1 when the user goal and implementation path are clear; use R2/R3 only when the task needs external prior art. Record the level and reason in `.agent/project-fit.md`.
 5. Initialize or update `.agent/*` files. If useful, run:
 
 ```bash
@@ -99,7 +108,7 @@ python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py init
 10. Validate using the strongest practical evidence.
 11. Record result, evidence, failure classification, reflection, next decision, branch, and commit in `.agent/experiment-log.md`.
 12. Save the experiment state before starting a sibling experiment. Use `record --commit --all`, `checkpoint --all`, or an intentional manual `git add` / `git commit`.
-13. If success criteria are not met and no stop condition applies, immediately select the next experiment or return to prior-art scouting when local evidence suggests missing knowledge.
+13. If success criteria are not met and no stop condition applies, immediately select the next experiment or escalate research triage when local evidence suggests missing knowledge.
 14. Update `.agent/handoff.md` before pausing, context compression, branch switch, or final handoff.
 
 The helper refuses to create a new experiment branch from a dirty worktree unless `--checkpoint-before` or `--allow-dirty` is explicit. This prevents one experiment's uncommitted code from leaking into the next experiment.

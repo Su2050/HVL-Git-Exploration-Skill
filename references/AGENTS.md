@@ -1,6 +1,6 @@
 # AGENTS.md — HVL Git State Machine Protocol
 
-This repository uses the **Hypothesis Verification Loop with Git as External State Machine** and prior-art scouting.
+This repository uses the **Hypothesis Verification Loop with Git as External State Machine** and research triage.
 
 When solving complex tasks, do not behave like a one-shot code generator. Behave like an expert investigator.
 
@@ -26,17 +26,18 @@ Do not use the full protocol for simple deterministic edits unless the user expl
 Behave like an expert investigator:
 
 1. State the goal and success criteria.
-2. For research-like or complex tasks, scout prior art before forming the main hypothesis tree.
-3. Record sources in `.agent/source-ledger.md`, synthesize methods in `.agent/prior-art-map.md`, and convert useful findings into `.agent/hypothesis-backlog.md`.
-4. Convert each solution into an explicit hypothesis.
-5. Create a Git checkpoint before risky changes.
-6. Use a dedicated branch or commit for each hypothesis.
-7. Make one conceptual change at a time.
-8. Validate with tests, logs, runtime checks, artifact inspection, training metrics, simulation results, benchmark results, or clearly stated manual checks.
-9. Record the hypothesis, change, evidence, result, and reflection in `.agent/experiment-log.md`.
-10. If validation fails, classify the failure before continuing.
-11. Decide whether to retry the current node, switch to a sibling hypothesis, split the problem, return to prior-art scouting, or backtrack to a parent checkpoint.
-12. Keep `.agent/handoff.md` updated so another AI or human can continue after context compression.
+2. Classify research need first: R0 no scouting, R1 lightweight context check, R2 targeted prior-art scan, or R3 deep research survey.
+3. Do not scout external prior art when the task is simple, the user gave a clear implementation path, or local context is sufficient.
+4. For R2/R3, record sources in `.agent/source-ledger.md`, synthesize methods in `.agent/prior-art-map.md`, and convert useful findings into `.agent/hypothesis-backlog.md`.
+5. Convert each solution into an explicit hypothesis.
+6. Create a Git checkpoint before risky changes.
+7. Use a dedicated branch or commit for each hypothesis.
+8. Make one conceptual change at a time.
+9. Validate with tests, logs, runtime checks, artifact inspection, training metrics, simulation results, benchmark results, or clearly stated manual checks.
+10. Record the hypothesis, change, evidence, result, and reflection in `.agent/experiment-log.md`.
+11. If validation fails, classify the failure before continuing.
+12. Decide whether to retry the current node, switch to a sibling hypothesis, split the problem, escalate research triage, or backtrack to a parent checkpoint.
+13. Keep `.agent/handoff.md` updated so another AI or human can continue after context compression.
 
 ## Required files
 
@@ -96,13 +97,14 @@ Next:
 
 For scientific research, ML, RL, robotics, simulation, or meta-learning tasks:
 
-1. Search for closest prior art: papers, official code, benchmark pages, standards, serious technical blogs, issues, postmortems, and adjacent-domain analogies.
-2. Prefer source priority P0 official papers/code/docs/benchmarks, then P1 high-quality repos/repro reports/blogs, then P2 issues/discussions, then P3 speculative analogies.
-3. Use Git branches for conceptual hypotheses, not for every seed or hyperparameter run.
-4. Use experiment trackers, logs, notebooks, or structured files for concrete runs, seeds, metrics, curves, videos, checkpoints, and artifacts.
-5. Record environment version, data/scenario version, reward/config changes, observation/action changes, seeds, metrics, and failure modes.
-6. Treat noisy or one-seed results as inconclusive unless the validation plan says otherwise.
-7. Do not claim algorithmic success without baseline comparison and enough evidence for the task context.
+1. Start with research triage. Use R0/R1 for clear low-risk work; use R2/R3 only when external knowledge is needed.
+2. For R2/R3, search for closest prior art: papers, official code, benchmark pages, standards, serious technical blogs, issues, postmortems, and adjacent-domain analogies.
+3. Prefer source priority P0 official papers/code/docs/benchmarks, then P1 high-quality repos/repro reports/blogs, then P2 issues/discussions, then P3 speculative analogies.
+4. Use Git branches for conceptual hypotheses, not for every seed or hyperparameter run.
+5. Use experiment trackers, logs, notebooks, or structured files for concrete runs, seeds, metrics, curves, videos, checkpoints, and artifacts.
+6. Record environment version, data/scenario version, reward/config changes, observation/action changes, seeds, metrics, and failure modes.
+7. Treat noisy or one-seed results as inconclusive unless the validation plan says otherwise.
+8. Do not claim algorithmic success without baseline comparison and enough evidence for the task context.
 
 ## Failure classification
 
@@ -175,6 +177,7 @@ This project includes a helper script:
 ```bash
 python3 scripts/hvl.py init
 python3 scripts/hvl.py status
+python3 scripts/hvl.py triage --level R0 --reason "Clear implementation path" --scope "No external scouting" --decision "Proceed with local validation"
 python3 scripts/hvl.py source --title "..." --type paper --priority P0 --takeaway "..." --confidence high --relevance "..."
 python3 scripts/hvl.py prior-art --method "..." --problem "..." --idea "..." --evidence "..." --confidence medium --adaptation "..." --risk "..." --hypothesis "..."
 python3 scripts/hvl.py start --node N1 --title "Fix login timeout" --hypothesis "The timeout is caused by stale token refresh state"

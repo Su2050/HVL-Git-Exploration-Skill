@@ -12,13 +12,23 @@ What useful system behavior, metric, or capability should improve?
 
 Explain why a direct solution is not known or not reliable.
 
-## 4. Current best known baseline
+## 4. Research triage
+
+```text
+Level: R0 no scouting / R1 lightweight context check / R2 targeted prior-art scan / R3 deep research survey
+Reason:
+Scope:
+Escalation trigger:
+Decision:
+```
+
+## 5. Current best known baseline
 
 - Baseline method:
 - Baseline metric:
 - Known limitations:
 
-## 5. Prior-art scouting packet
+## 6. Prior-art scouting packet
 
 ```text
 Research question:
@@ -32,7 +42,9 @@ Open gaps:
 Experiment candidates:
 ```
 
-## 6. Active hypothesis
+Use this packet only for R2/R3, or for R1 when user-provided sources are central.
+
+## 7. Active hypothesis
 
 ```text
 Hypothesis:
@@ -42,7 +54,7 @@ Expected evidence:
 Invalidating evidence:
 ```
 
-## 7. Experiment design
+## 8. Experiment design
 
 ```text
 Minimal change:
@@ -54,7 +66,7 @@ Artifacts:
 Seeds:
 ```
 
-## 8. Git strategy
+## 9. Git strategy
 
 ```text
 Checkpoint:
@@ -63,7 +75,7 @@ Commit plan:
 Backtrack target:
 ```
 
-## 9. Result and reflection
+## 10. Result and reflection
 
 ```text
 Result:

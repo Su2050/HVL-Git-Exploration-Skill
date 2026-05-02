@@ -4,14 +4,15 @@
 
 ## 中文
 
-HVL Git Exploration 是一个 Codex Skill，用于处理没有现成标准答案、需要先借鉴全球前人研究，再通过假设、实验、验证证据和回退逐步逼近答案的复杂探索任务。
+HVL Git Exploration 是一个 Codex Skill，用于处理没有现成标准答案、需要按任务难度决定是否借鉴前人研究，再通过假设、实验、验证证据和回退逐步逼近答案的复杂探索任务。
 
 它适合科研型工程、复杂 Debug、性能优化、ML/RL 实验、机器人、仿真、AutoML、元学习，以及长时间 AI 编程任务。
 
 ## 它提供什么
 
 - Hypothesis Verification Loop 假设验证闭环。
-- Prior-art scouting：检索论文、官方文档、开源实现、benchmark、技术博客、issue 和相邻领域经验。
+- Research triage：先判断 R0 不检索 / R1 轻量检查 / R2 定向检索 / R3 深度研究。
+- Prior-art scouting：仅在需要时检索论文、官方文档、开源实现、benchmark、技术博客、issue 和相邻领域经验。
 - `.agent/source-ledger.md`、`.agent/prior-art-map.md`、`.agent/hypothesis-backlog.md` 研究记忆。
 - Git checkpoint 和实验分支。
 - `.agent/*` 持久化推理记忆。
@@ -50,6 +51,16 @@ Use $hvl-git-exploration for this task.
 
 ```bash
 python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py init
+```
+
+记录研究分级：
+
+```bash
+python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py triage \
+  --level R0 \
+  --reason "User provided a clear low-risk implementation path" \
+  --scope "No external scouting needed" \
+  --decision "Proceed directly with local validation"
 ```
 
 记录一个前人研究来源：
@@ -120,14 +131,15 @@ MIT
 
 ## English
 
-HVL Git Exploration is a Codex Skill for complex exploratory work where there is no fixed answer and progress must come from global prior art, hypotheses, experiments, validation evidence, and deliberate backtracking.
+HVL Git Exploration is a Codex Skill for complex exploratory work where there is no fixed answer and progress must come from appropriately scoped research triage, optional prior art, hypotheses, experiments, validation evidence, and deliberate backtracking.
 
 It is designed for research-like engineering tasks, complex debugging, performance work, ML/RL experiments, robotics, simulation, AutoML, meta-learning, and long-running AI coding sessions.
 
 ## What It Adds
 
 - Hypothesis Verification Loop workflow.
-- Prior-art scouting across papers, official docs, open-source implementations, benchmarks, technical blogs, issues, and adjacent domains.
+- Research triage: choose R0 no scouting, R1 lightweight context check, R2 targeted scan, or R3 deep research survey.
+- Prior-art scouting only when needed across papers, official docs, open-source implementations, benchmarks, technical blogs, issues, and adjacent domains.
 - Research memory files: `.agent/source-ledger.md`, `.agent/prior-art-map.md`, and `.agent/hypothesis-backlog.md`.
 - Git checkpoints and experiment branches.
 - Persistent `.agent/*` reasoning files.
@@ -166,6 +178,16 @@ Initialize a project for HVL-Git:
 
 ```bash
 python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py init
+```
+
+Record research triage:
+
+```bash
+python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py triage \
+  --level R0 \
+  --reason "User provided a clear low-risk implementation path" \
+  --scope "No external scouting needed" \
+  --decision "Proceed directly with local validation"
 ```
 
 Record a prior-art source:

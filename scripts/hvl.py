@@ -24,13 +24,13 @@ FILES = {
     "decision-tree.md": """# Decision Tree\n\n## N0 — Root goal\n\n- Parent: none\n- Question:\n- Candidate hypotheses:\n- Result: pending\n\n""",
     "assumptions.md": """# Assumptions\n\n## Active assumptions\n\n""",
     "experiment-log.md": """# Experiment Log\n\n## Experiments\n\n""",
-    "source-ledger.md": """# Source Ledger\n\n## Sources Reviewed\n\nRecord papers, official docs, repos, benchmark pages, blogs, issue threads, standards, and adjacent-domain sources.\n\n""",
-    "prior-art-map.md": """# Prior-Art Map\n\n## Method Families\n\nRecord existing solutions, baselines, assumptions, evidence strength, adaptation ideas, and risks.\n\n""",
-    "hypothesis-backlog.md": """# Hypothesis Backlog\n\n## Research-Derived Candidate Hypotheses\n\nRecord hypotheses derived from prior art before promoting them into decision-tree nodes.\n\n""",
+    "source-ledger.md": """# Source Ledger\n\n## Sources Reviewed\n\nUse this when research triage is R2/R3, or when R1 uses user-provided sources. Record papers, official docs, repos, benchmark pages, blogs, issue threads, standards, and adjacent-domain sources.\n\n""",
+    "prior-art-map.md": """# Prior-Art Map\n\n## Method Families\n\nUse this when research triage is R2/R3. Record existing solutions, baselines, assumptions, evidence strength, adaptation ideas, and risks.\n\n""",
+    "hypothesis-backlog.md": """# Hypothesis Backlog\n\n## Research-Derived Candidate Hypotheses\n\nUse this when research triage is R2/R3. Record hypotheses derived from prior art before promoting them into decision-tree nodes.\n\n""",
     "validation.md": """# Validation Plan\n\n## Commands\n\n```bash\n# customize this\n```\n\n""",
     "handoff.md": """# Handoff Summary\n\n## Current state\n\n## Validated facts\n\n## Failed hypotheses\n\n## Stop condition, if not complete\n\n## Next concrete step\n\n""",
     "risk-register.md": """# Risk Register\n\n""",
-    "project-fit.md": """# Project Fit Assessment\n\n## Task name\n\nTBD\n\n## Use mode\n\n- [ ] Lightweight mode\n- [ ] Standard mode\n- [ ] Research mode\n\n## Why HVL-Git is needed\n\nTBD\n\n## Validation signals\n\nTBD\n\n## Persistence boundary\n\nContinue until success criteria pass, or record a real stop condition.\n\n""",
+    "project-fit.md": """# Project Fit Assessment\n\n## Task name\n\nTBD\n\n## Use mode\n\n- [ ] Lightweight mode\n- [ ] Standard mode\n- [ ] Research mode\n\n## Research triage\n\n- Level: R0 no scouting / R1 lightweight context check / R2 targeted prior-art scan / R3 deep research survey\n- Reason:\n- Escalation trigger:\n\n## Why HVL-Git is needed\n\nTBD\n\n## Validation signals\n\nTBD\n\n## Persistence boundary\n\nContinue until success criteria pass, or record a real stop condition.\n\n""",
 }
 
 
@@ -333,6 +333,26 @@ def cmd_backtrack(args: argparse.Namespace) -> None:
         print(f"Checked out {args.target}")
 
 
+def cmd_triage(args: argparse.Namespace) -> None:
+    ensure_agent_files()
+    entry = f"""
+
+---
+
+## Research triage - {now()}
+
+- Level: {args.level}
+- User intent: {args.user_intent or 'TBD'}
+- Reason: {args.reason}
+- Scope: {args.scope}
+- Sources to check: {args.sources or 'N/A'}
+- Escalation trigger: {args.escalation or 'TBD'}
+- Decision: {args.decision}
+"""
+    append(AGENT_DIR / "project-fit.md", entry)
+    print("Recorded research triage in .agent/project-fit.md")
+
+
 def cmd_source(args: argparse.Namespace) -> None:
     ensure_agent_files()
     entry = f"""
@@ -473,6 +493,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--decision")
     p.add_argument("--checkout", action="store_true")
     p.set_defaults(func=cmd_backtrack)
+
+    p = sub.add_parser("triage", help="Record research triage level before prior-art scouting")
+    p.add_argument("--level", choices=["R0", "R1", "R2", "R3"], required=True)
+    p.add_argument("--reason", required=True)
+    p.add_argument("--scope", required=True, help="Research scope or why research is skipped")
+    p.add_argument("--decision", required=True, help="Proceed directly, lightweight check, targeted scan, or deep survey")
+    p.add_argument("--user-intent")
+    p.add_argument("--sources")
+    p.add_argument("--escalation")
+    p.set_defaults(func=cmd_triage)
 
     p = sub.add_parser("source", help="Record a prior-art source")
     p.add_argument("--title", required=True)
