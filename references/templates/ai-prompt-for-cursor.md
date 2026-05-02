@@ -4,6 +4,7 @@
 Use the Cursor rule in .cursor/rules/hvl-git-state-machine.mdc.
 
 For this task, enter HVL mode:
+- if this is research-like or complex, scout prior art first and record source-ledger / prior-art-map / hypothesis-backlog;
 - show the current decision node;
 - define hypotheses before editing;
 - create or use a Git checkpoint;

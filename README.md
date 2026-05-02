@@ -4,13 +4,15 @@
 
 ## 中文
 
-HVL Git Exploration 是一个 Codex Skill，用于处理没有现成标准答案、需要通过假设、实验、验证证据和回退逐步逼近答案的复杂探索任务。
+HVL Git Exploration 是一个 Codex Skill，用于处理没有现成标准答案、需要先借鉴全球前人研究，再通过假设、实验、验证证据和回退逐步逼近答案的复杂探索任务。
 
 它适合科研型工程、复杂 Debug、性能优化、ML/RL 实验、机器人、仿真、AutoML、元学习，以及长时间 AI 编程任务。
 
 ## 它提供什么
 
 - Hypothesis Verification Loop 假设验证闭环。
+- Prior-art scouting：检索论文、官方文档、开源实现、benchmark、技术博客、issue 和相邻领域经验。
+- `.agent/source-ledger.md`、`.agent/prior-art-map.md`、`.agent/hypothesis-backlog.md` 研究记忆。
 - Git checkpoint 和实验分支。
 - `.agent/*` 持久化推理记忆。
 - 基于验证证据的实验记录。
@@ -48,6 +50,33 @@ Use $hvl-git-exploration for this task.
 
 ```bash
 python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py init
+```
+
+记录一个前人研究来源：
+
+```bash
+python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py source \
+  --title "Paper or repo title" \
+  --type paper \
+  --priority P0 \
+  --url "https://example.com" \
+  --takeaway "Core reusable idea" \
+  --confidence high \
+  --relevance "Why it matters for this task"
+```
+
+把前人方法转成候选假设：
+
+```bash
+python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py prior-art \
+  --method "Baseline method" \
+  --problem "Closest solved problem" \
+  --idea "Core idea" \
+  --evidence "Reported benchmark or reproduction" \
+  --confidence medium \
+  --adaptation "How to adapt locally" \
+  --risk "What may not transfer" \
+  --hypothesis "Adapting this baseline improves the target metric"
 ```
 
 开始一个实验分支：
@@ -91,13 +120,15 @@ MIT
 
 ## English
 
-HVL Git Exploration is a Codex Skill for complex exploratory work where there is no fixed answer and progress must come from hypotheses, experiments, validation evidence, and deliberate backtracking.
+HVL Git Exploration is a Codex Skill for complex exploratory work where there is no fixed answer and progress must come from global prior art, hypotheses, experiments, validation evidence, and deliberate backtracking.
 
 It is designed for research-like engineering tasks, complex debugging, performance work, ML/RL experiments, robotics, simulation, AutoML, meta-learning, and long-running AI coding sessions.
 
 ## What It Adds
 
 - Hypothesis Verification Loop workflow.
+- Prior-art scouting across papers, official docs, open-source implementations, benchmarks, technical blogs, issues, and adjacent domains.
+- Research memory files: `.agent/source-ledger.md`, `.agent/prior-art-map.md`, and `.agent/hypothesis-backlog.md`.
 - Git checkpoints and experiment branches.
 - Persistent `.agent/*` reasoning files.
 - Validation-driven experiment records.
@@ -135,6 +166,33 @@ Initialize a project for HVL-Git:
 
 ```bash
 python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py init
+```
+
+Record a prior-art source:
+
+```bash
+python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py source \
+  --title "Paper or repo title" \
+  --type paper \
+  --priority P0 \
+  --url "https://example.com" \
+  --takeaway "Core reusable idea" \
+  --confidence high \
+  --relevance "Why it matters for this task"
+```
+
+Convert a prior-art method into a candidate hypothesis:
+
+```bash
+python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py prior-art \
+  --method "Baseline method" \
+  --problem "Closest solved problem" \
+  --idea "Core idea" \
+  --evidence "Reported benchmark or reproduction" \
+  --confidence medium \
+  --adaptation "How to adapt locally" \
+  --risk "What may not transfer" \
+  --hypothesis "Adapting this baseline improves the target metric"
 ```
 
 Start an experiment branch:

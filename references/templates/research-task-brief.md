@@ -18,7 +18,21 @@ Explain why a direct solution is not known or not reliable.
 - Baseline metric:
 - Known limitations:
 
-## 5. Active hypothesis
+## 5. Prior-art scouting packet
+
+```text
+Research question:
+Closest existing solutions:
+Reusable baselines or code:
+Known failure modes:
+Benchmark or validation signals:
+Adjacent analogies:
+Evidence strength:
+Open gaps:
+Experiment candidates:
+```
+
+## 6. Active hypothesis
 
 ```text
 Hypothesis:
@@ -28,7 +42,7 @@ Expected evidence:
 Invalidating evidence:
 ```
 
-## 6. Experiment design
+## 7. Experiment design
 
 ```text
 Minimal change:
@@ -40,7 +54,7 @@ Artifacts:
 Seeds:
 ```
 
-## 7. Git strategy
+## 8. Git strategy
 
 ```text
 Checkpoint:
@@ -49,7 +63,7 @@ Commit plan:
 Backtrack target:
 ```
 
-## 8. Result and reflection
+## 9. Result and reflection
 
 ```text
 Result:

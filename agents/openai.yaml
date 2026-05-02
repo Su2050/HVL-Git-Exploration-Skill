@@ -1,6 +1,6 @@
 interface:
   display_name: "HVL Git Exploration"
-  short_description: "用假设验证、实验记录与 Git 回退管理复杂探索任务"
-  default_prompt: "Use $hvl-git-exploration for this exploratory task and maintain hypotheses, validation evidence, and Git checkpoints."
+  short_description: "结合前人研究、假设验证与 Git 回退的探索系统"
+  default_prompt: "Use $hvl-git-exploration for this research-like task: scout prior art, form hypotheses, validate with evidence, and maintain Git checkpoints."
 policy:
   allow_implicit_invocation: true

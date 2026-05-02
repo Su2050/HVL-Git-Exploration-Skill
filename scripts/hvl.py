@@ -24,6 +24,9 @@ FILES = {
     "decision-tree.md": """# Decision Tree\n\n## N0 — Root goal\n\n- Parent: none\n- Question:\n- Candidate hypotheses:\n- Result: pending\n\n""",
     "assumptions.md": """# Assumptions\n\n## Active assumptions\n\n""",
     "experiment-log.md": """# Experiment Log\n\n## Experiments\n\n""",
+    "source-ledger.md": """# Source Ledger\n\n## Sources Reviewed\n\nRecord papers, official docs, repos, benchmark pages, blogs, issue threads, standards, and adjacent-domain sources.\n\n""",
+    "prior-art-map.md": """# Prior-Art Map\n\n## Method Families\n\nRecord existing solutions, baselines, assumptions, evidence strength, adaptation ideas, and risks.\n\n""",
+    "hypothesis-backlog.md": """# Hypothesis Backlog\n\n## Research-Derived Candidate Hypotheses\n\nRecord hypotheses derived from prior art before promoting them into decision-tree nodes.\n\n""",
     "validation.md": """# Validation Plan\n\n## Commands\n\n```bash\n# customize this\n```\n\n""",
     "handoff.md": """# Handoff Summary\n\n## Current state\n\n## Validated facts\n\n## Failed hypotheses\n\n## Stop condition, if not complete\n\n## Next concrete step\n\n""",
     "risk-register.md": """# Risk Register\n\n""",
@@ -330,6 +333,76 @@ def cmd_backtrack(args: argparse.Namespace) -> None:
         print(f"Checked out {args.target}")
 
 
+def cmd_source(args: argparse.Namespace) -> None:
+    ensure_agent_files()
+    entry = f"""
+
+---
+
+## {args.title}
+
+- Time: {now()}
+- Type: {args.type}
+- Priority: {args.priority}
+- URL: {args.url or 'N/A'}
+- Authors / org: {args.authors or 'TBD'}
+- Year / date: {args.date or 'TBD'}
+- Domain: {args.domain or 'TBD'}
+- Key takeaway: {args.takeaway}
+- Evidence strength: {args.confidence}
+- Reusable baseline / code: {args.reusable or 'TBD'}
+- Known limits / failure modes: {args.limits or 'TBD'}
+- Relevance to current task: {args.relevance}
+- Tags: {args.tags or 'TBD'}
+"""
+    append(AGENT_DIR / "source-ledger.md", entry)
+    print("Recorded source in .agent/source-ledger.md")
+
+
+def cmd_prior_art(args: argparse.Namespace) -> None:
+    ensure_agent_files()
+    entry = f"""
+
+---
+
+## {args.method}
+
+- Time: {now()}
+- Source: {args.source or 'TBD'}
+- Method family: {args.family or 'TBD'}
+- Problem solved / closest analogy: {args.problem}
+- Core idea: {args.idea}
+- Evidence: {args.evidence}
+- Evidence strength: {args.confidence}
+- Assumptions / prerequisites: {args.assumptions or 'TBD'}
+- Adaptation to current task: {args.adaptation}
+- Risks / non-transferable parts: {args.risk}
+- Candidate experiment: {args.experiment or 'TBD'}
+- Next decision: {args.next or 'TBD'}
+"""
+    append(AGENT_DIR / "prior-art-map.md", entry)
+    print("Recorded prior-art method in .agent/prior-art-map.md")
+
+    if args.hypothesis:
+        hypothesis = f"""
+
+---
+
+## {args.hypothesis_id or 'H-' + _dt.datetime.now().strftime('%Y%m%d-%H%M%S')} - {args.hypothesis}
+
+- Derived from: {args.method}
+- Source: {args.source or 'TBD'}
+- Claim: {args.hypothesis}
+- Why it might be true: {args.idea}
+- Expected evidence: {args.expected or 'TBD'}
+- Invalidating evidence: {args.invalidating or 'TBD'}
+- Validation idea: {args.experiment or 'TBD'}
+- Current status: candidate
+"""
+        append(AGENT_DIR / "hypothesis-backlog.md", hypothesis)
+        print("Recorded candidate hypothesis in .agent/hypothesis-backlog.md")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="HVL Git State Machine helper")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -400,6 +473,41 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--decision")
     p.add_argument("--checkout", action="store_true")
     p.set_defaults(func=cmd_backtrack)
+
+    p = sub.add_parser("source", help="Record a prior-art source")
+    p.add_argument("--title", required=True)
+    p.add_argument("--type", choices=["paper", "official_doc", "standard", "benchmark", "repo", "blog", "issue", "discussion", "postmortem", "dataset", "other"], required=True)
+    p.add_argument("--priority", choices=["P0", "P1", "P2", "P3"], required=True)
+    p.add_argument("--url")
+    p.add_argument("--authors")
+    p.add_argument("--date")
+    p.add_argument("--domain")
+    p.add_argument("--takeaway", required=True)
+    p.add_argument("--confidence", choices=["high", "medium", "low", "speculative"], required=True)
+    p.add_argument("--reusable")
+    p.add_argument("--limits")
+    p.add_argument("--relevance", required=True)
+    p.add_argument("--tags")
+    p.set_defaults(func=cmd_source)
+
+    p = sub.add_parser("prior-art", help="Record a prior-art method and optional candidate hypothesis")
+    p.add_argument("--method", required=True)
+    p.add_argument("--source")
+    p.add_argument("--family")
+    p.add_argument("--problem", required=True)
+    p.add_argument("--idea", required=True)
+    p.add_argument("--evidence", required=True)
+    p.add_argument("--confidence", choices=["high", "medium", "low", "speculative"], required=True)
+    p.add_argument("--assumptions")
+    p.add_argument("--adaptation", required=True)
+    p.add_argument("--risk", required=True)
+    p.add_argument("--experiment")
+    p.add_argument("--next")
+    p.add_argument("--hypothesis")
+    p.add_argument("--hypothesis-id")
+    p.add_argument("--expected")
+    p.add_argument("--invalidating")
+    p.set_defaults(func=cmd_prior_art)
 
     return parser
 

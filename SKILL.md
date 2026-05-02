@@ -1,13 +1,13 @@
 ---
 name: hvl-git-exploration
-description: Use this skill for exploratory, research-like, risky, multi-step, debugging-heavy, simulation/training-heavy, performance, ML/RL, robotics, AutoML, meta-learning, or complex system tasks where there is no fixed answer and progress must be made through hypotheses, experiments, logs, tests, metrics, benchmarks, simulation results, or manual acceptance. It turns Codex into an HVL-Git expert exploration agent using .agent memory files, Git checkpoints, validation evidence, failure classification, deliberate backtracking, and persistence until success criteria are met or a real stop condition is reached.
+description: Use this skill for exploratory, research-like, risky, multi-step, debugging-heavy, simulation/training-heavy, performance, ML/RL, robotics, AutoML, meta-learning, or complex system tasks where there is no fixed answer and progress must be made through prior-art research, hypotheses, experiments, logs, tests, metrics, benchmarks, simulation results, or manual acceptance. It turns Codex into an HVL-Git research-grade exploration agent using global prior art, .agent memory files, Git checkpoints, validation evidence, failure classification, deliberate backtracking, and persistence until success criteria are met or a real stop condition is reached.
 ---
 
 # HVL Git Exploration
 
 ## Core Idea
 
-Treat every non-trivial solution as a hypothesis. Use Git as the external state machine, `.agent/*` files as durable reasoning memory, and tests/logs/metrics/artifacts/manual checks as evidence.
+Treat every non-trivial solution as a hypothesis grounded in the best available prior art. Use Git as the external state machine, `.agent/*` files as durable reasoning memory, and tests/logs/metrics/artifacts/manual checks as evidence.
 
 Use this skill when the task is closer to exploration than direct implementation: no standard answer, multiple plausible paths, ambiguous failures, noisy feedback, long-running experiments, or handoff risk.
 
@@ -35,13 +35,48 @@ If not done, what is the next experiment and why am I not running it now?
 
 If the answer is "not done" and no stop condition applies, choose the next experiment and continue.
 
+## Prior-Art Scouting Contract
+
+For research-like, algorithmic, architecture, ML/RL, robotics, simulation, performance, reliability, or complex debugging tasks, do prior-art scouting before forming the main hypothesis tree. Search beyond exact keyword matches:
+
+- same goal or metric;
+- same failure mode;
+- same constraints, hardware, data shape, latency, safety, cost, or deployment environment;
+- adjacent domains with transferable methods;
+- negative results, postmortems, ablations, and known failure cases.
+
+Use the strongest available sources first:
+
+- **P0**: papers, official code, standards, official docs, benchmark leaderboards, datasets.
+- **P1**: high-quality open-source implementations, reproducibility reports, serious engineering blogs.
+- **P2**: issues, discussions, forum posts, failure reports, informal experience.
+- **P3**: analogies inferred by the agent. Mark these as speculative and validate locally.
+
+Record what was found in `.agent/source-ledger.md` and synthesize it in `.agent/prior-art-map.md`. Convert useful findings into `.agent/hypothesis-backlog.md`. Prior art is a source of candidate hypotheses, baselines, validation methods, and failure modes; it is not final proof.
+
+Before coding, prepare a compact research packet:
+
+```text
+Research question:
+Closest existing solutions:
+Reusable baselines or code:
+Known failure modes:
+Benchmark or validation signals:
+Adjacent analogies:
+Evidence strength:
+Open gaps:
+Experiment candidates:
+```
+
+If repeated experiments fail, evidence stays ambiguous, or validation seems weak, return to prior-art scouting before continuing.
+
 ## Mode Selection
 
 Choose the smallest useful mode:
 
 - **Lightweight**: one `.agent/current-plan.md`, one `.agent/experiment-log.md`, one validation signal, and a Git checkpoint plan.
-- **Standard**: add `.agent/project-fit.md`, `.agent/decision-tree.md`, `.agent/assumptions.md`, `.agent/validation.md`, `.agent/handoff.md`, and `.agent/risk-register.md`.
-- **Research**: standard mode plus experiment tracking discipline for seeds, configs, metrics, curves, artifacts, videos, datasets, scenario versions, and statistical confidence.
+- **Standard**: add `.agent/project-fit.md`, `.agent/source-ledger.md`, `.agent/prior-art-map.md`, `.agent/hypothesis-backlog.md`, `.agent/decision-tree.md`, `.agent/assumptions.md`, `.agent/validation.md`, `.agent/handoff.md`, and `.agent/risk-register.md`.
+- **Research**: standard mode plus deeper prior-art scouting and experiment tracking discipline for baselines, seeds, configs, metrics, curves, artifacts, videos, datasets, scenario versions, and statistical confidence.
 
 Prefer research mode for ML/RL, robotics, simulation, meta-learning, AutoML, benchmark design, and scientific/engineering research.
 
@@ -50,21 +85,22 @@ Prefer research mode for ML/RL, robotics, simulation, meta-learning, AutoML, ben
 1. State the goal, success criteria, known constraints, and strongest available validation signal.
 2. Define the completion gate: what evidence proves the task is done, and what stop conditions would justify pausing.
 3. Decide lightweight / standard / research mode and record the reason in `.agent/project-fit.md` when using standard or research mode.
-4. Initialize or update `.agent/*` files. If useful, run:
+4. For standard or research mode, scout prior art and record sources, method families, reusable baselines, failure modes, and candidate hypotheses.
+5. Initialize or update `.agent/*` files. If useful, run:
 
 ```bash
 python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py init
 ```
 
-5. Inspect Git status before edits. Respect existing user changes; do not overwrite unrelated work.
-6. Create a decision node and write the active hypothesis before making risky changes.
-7. For Codex-created branches, prefer `codex/hvl-<node>-<hypothesis-slug>`. If the project explicitly standardizes on `hvl/<node>-...`, follow the project.
-8. Make the smallest conceptual change that tests the active hypothesis.
-9. Validate using the strongest practical evidence.
-10. Record result, evidence, failure classification, reflection, next decision, branch, and commit in `.agent/experiment-log.md`.
-11. Save the experiment state before starting a sibling experiment. Use `record --commit --all`, `checkpoint --all`, or an intentional manual `git add` / `git commit`.
-12. If success criteria are not met and no stop condition applies, immediately select the next experiment and continue.
-13. Update `.agent/handoff.md` before pausing, context compression, branch switch, or final handoff.
+6. Inspect Git status before edits. Respect existing user changes; do not overwrite unrelated work.
+7. Create a decision node and write the active hypothesis before making risky changes.
+8. For Codex-created branches, prefer `codex/hvl-<node>-<hypothesis-slug>`. If the project explicitly standardizes on `hvl/<node>-...`, follow the project.
+9. Make the smallest conceptual change that tests the active hypothesis.
+10. Validate using the strongest practical evidence.
+11. Record result, evidence, failure classification, reflection, next decision, branch, and commit in `.agent/experiment-log.md`.
+12. Save the experiment state before starting a sibling experiment. Use `record --commit --all`, `checkpoint --all`, or an intentional manual `git add` / `git commit`.
+13. If success criteria are not met and no stop condition applies, immediately select the next experiment or return to prior-art scouting when local evidence suggests missing knowledge.
+14. Update `.agent/handoff.md` before pausing, context compression, branch switch, or final handoff.
 
 The helper refuses to create a new experiment branch from a dirty worktree unless `--checkpoint-before` or `--allow-dirty` is explicit. This prevents one experiment's uncommitted code from leaking into the next experiment.
 
@@ -136,6 +172,17 @@ Statistical confidence:
 
 Git branches represent conceptual hypotheses. Concrete training runs, seeds, curves, videos, checkpoints, and metrics belong in experiment trackers or structured logs.
 
+## Research Roles
+
+Use these roles as thinking lenses. If subagents are explicitly allowed, assign them as parallel sidecar tasks; otherwise perform the roles sequentially:
+
+- **Research Scout**: find papers, official docs, repos, benchmarks, and serious technical writeups.
+- **Method Analyst**: extract methods, assumptions, evidence strength, and limits.
+- **Implementation Scout**: find reusable code, dependencies, licenses, and reproduction cost.
+- **Benchmark Analyst**: identify baselines, metrics, datasets, test protocols, and acceptance signals.
+- **Risk Critic**: collect negative results, failure cases, non-transferable assumptions, and safety risks.
+- **Experiment Designer**: convert prior art into the next minimal local experiment.
+
 ## Failure Classification
 
 When validation fails or is ambiguous, classify before editing again:
@@ -176,5 +223,8 @@ Load only the reference needed for the current task:
 - `references/docs/05-failure-classification.md`: failure taxonomy and next actions.
 - `references/docs/11-rl-meta-research-guide.md`: ML/RL, robotics, simulation, and meta-learning guidance.
 - `references/templates/research-task-brief.md`: research task framing template.
+- `references/templates/source-ledger.md`: source review template.
+- `references/templates/prior-art-map.md`: prior-art synthesis template.
+- `references/templates/hypothesis-backlog.md`: research-derived hypothesis template.
 - `references/templates/ml-rl-experiment-entry.md`: ML/RL experiment log template.
 - `references/AGENTS.md`: project-level instruction template to copy or adapt into a repository.

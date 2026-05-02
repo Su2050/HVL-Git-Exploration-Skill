@@ -1,6 +1,6 @@
 # AGENTS.md — HVL Git State Machine Protocol
 
-This repository uses the **Hypothesis Verification Loop with Git as External State Machine**.
+This repository uses the **Hypothesis Verification Loop with Git as External State Machine** and prior-art scouting.
 
 When solving complex tasks, do not behave like a one-shot code generator. Behave like an expert investigator.
 
@@ -26,15 +26,17 @@ Do not use the full protocol for simple deterministic edits unless the user expl
 Behave like an expert investigator:
 
 1. State the goal and success criteria.
-2. Convert each solution into an explicit hypothesis.
-3. Create a Git checkpoint before risky changes.
-4. Use a dedicated branch or commit for each hypothesis.
-5. Make one conceptual change at a time.
-6. Validate with tests, logs, runtime checks, artifact inspection, training metrics, simulation results, benchmark results, or clearly stated manual checks.
-7. Record the hypothesis, change, evidence, result, and reflection in `.agent/experiment-log.md`.
-8. If validation fails, classify the failure before continuing.
-9. Decide whether to retry the current node, switch to a sibling hypothesis, split the problem, or backtrack to a parent checkpoint.
-10. Keep `.agent/handoff.md` updated so another AI or human can continue after context compression.
+2. For research-like or complex tasks, scout prior art before forming the main hypothesis tree.
+3. Record sources in `.agent/source-ledger.md`, synthesize methods in `.agent/prior-art-map.md`, and convert useful findings into `.agent/hypothesis-backlog.md`.
+4. Convert each solution into an explicit hypothesis.
+5. Create a Git checkpoint before risky changes.
+6. Use a dedicated branch or commit for each hypothesis.
+7. Make one conceptual change at a time.
+8. Validate with tests, logs, runtime checks, artifact inspection, training metrics, simulation results, benchmark results, or clearly stated manual checks.
+9. Record the hypothesis, change, evidence, result, and reflection in `.agent/experiment-log.md`.
+10. If validation fails, classify the failure before continuing.
+11. Decide whether to retry the current node, switch to a sibling hypothesis, split the problem, return to prior-art scouting, or backtrack to a parent checkpoint.
+12. Keep `.agent/handoff.md` updated so another AI or human can continue after context compression.
 
 ## Required files
 
@@ -43,6 +45,9 @@ Use these files as persistent memory:
 ```text
 .agent/project-fit.md
 .agent/current-plan.md
+.agent/source-ledger.md
+.agent/prior-art-map.md
+.agent/hypothesis-backlog.md
 .agent/decision-tree.md
 .agent/assumptions.md
 .agent/experiment-log.md
@@ -91,11 +96,13 @@ Next:
 
 For scientific research, ML, RL, robotics, simulation, or meta-learning tasks:
 
-1. Use Git branches for conceptual hypotheses, not for every seed or hyperparameter run.
-2. Use experiment trackers, logs, notebooks, or structured files for concrete runs, seeds, metrics, curves, videos, checkpoints, and artifacts.
-3. Record environment version, data/scenario version, reward/config changes, observation/action changes, seeds, metrics, and failure modes.
-4. Treat noisy or one-seed results as inconclusive unless the validation plan says otherwise.
-5. Do not claim algorithmic success without baseline comparison and enough evidence for the task context.
+1. Search for closest prior art: papers, official code, benchmark pages, standards, serious technical blogs, issues, postmortems, and adjacent-domain analogies.
+2. Prefer source priority P0 official papers/code/docs/benchmarks, then P1 high-quality repos/repro reports/blogs, then P2 issues/discussions, then P3 speculative analogies.
+3. Use Git branches for conceptual hypotheses, not for every seed or hyperparameter run.
+4. Use experiment trackers, logs, notebooks, or structured files for concrete runs, seeds, metrics, curves, videos, checkpoints, and artifacts.
+5. Record environment version, data/scenario version, reward/config changes, observation/action changes, seeds, metrics, and failure modes.
+6. Treat noisy or one-seed results as inconclusive unless the validation plan says otherwise.
+7. Do not claim algorithmic success without baseline comparison and enough evidence for the task context.
 
 ## Failure classification
 
@@ -168,6 +175,8 @@ This project includes a helper script:
 ```bash
 python3 scripts/hvl.py init
 python3 scripts/hvl.py status
+python3 scripts/hvl.py source --title "..." --type paper --priority P0 --takeaway "..." --confidence high --relevance "..."
+python3 scripts/hvl.py prior-art --method "..." --problem "..." --idea "..." --evidence "..." --confidence medium --adaptation "..." --risk "..." --hypothesis "..."
 python3 scripts/hvl.py start --node N1 --title "Fix login timeout" --hypothesis "The timeout is caused by stale token refresh state"
 python3 scripts/hvl.py record --node N1 --hypothesis "..." --changes "..." --validation "pytest ..." --result fail --reflection "..." --next "Try sibling hypothesis B"
 python3 scripts/hvl.py checkpoint --message "checkpoint: validated token refresh fix" --all
