@@ -199,9 +199,11 @@ When evidence is surprising, clustered by surface/template, or statistically imp
 
 ```text
 measurement_error
-true_model_error
+true_system_error
 mixed_or_ambiguous
 ```
+
+`true_system_error` means the measurement layer is credible, and the observed failure is valid evidence that the tested system, model, method, controller, policy, workflow, or capability failed under the intended validation condition. It does not mean an infrastructure/API/timeout/execution failure; classify those separately as `execution_error`, `missing_prerequisite`, or `invalid_validation`.
 
 If a measurement error is found, repair or quarantine the measurement layer, rerun the smallest decisive validation, and update the interpretation. If the experiment result is affected, record the experiment with failure classification `measurement_error`. Do not count a parse failure, schema mismatch, scorer false negative, or ambiguous prompt response as evidence of a weak model capability until measurement explanations have been ruled out.
 

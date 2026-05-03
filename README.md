@@ -17,7 +17,7 @@ HVL Git Exploration 是一个 Codex Skill，用于处理没有现成标准答案
 - Git checkpoint 和实验分支。
 - `.agent/*` 持久化推理记忆。
 - 基于验证证据的实验记录。
-- Measurement audit：区分测量错误、真实模型错误和混合不明。
+- Measurement audit：区分测量错误、真实系统错误和混合不明。
 - 失败后先分类，再决定重试、换方案、拆分或回退。
 - sibling experiment 之间的 dirty worktree 防混入保护。
 - Persistence contract：持续推进，直到成功标准满足或遇到真实停止条件。

@@ -18,7 +18,7 @@ Use this when a benchmark, evaluation, simulation, model diagnostic, parser, sco
   - Data leakage / duplicates / split contamination:
   - Label noise / adjudication ambiguity:
   - Metric aggregation / subgroup effects:
-- Verdict: measurement_error / true_model_error / mixed_or_ambiguous
+- Verdict: measurement_error / true_system_error / mixed_or_ambiguous
 - Root cause:
 - Evidence:
 - Corrective action:
@@ -27,4 +27,6 @@ Use this when a benchmark, evaluation, simulation, model diagnostic, parser, sco
 
 ## Rule
 
-Do not treat a suspicious failure as model or method evidence until plausible measurement explanations have been ruled out.
+Do not treat a suspicious failure as system, model, method, controller, policy, workflow, or capability evidence until plausible measurement explanations have been ruled out.
+
+`true_system_error` means the measurement layer is credible and the tested system or capability actually failed under the intended validation condition. It does not mean infrastructure/API/timeout/execution failure.

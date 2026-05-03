@@ -121,7 +121,9 @@ When validation fails, do not blindly patch again. First classify the failure:
 8. **Randomness / insufficient statistical confidence** — especially relevant to training and simulation tasks.
 9. **Simulation-real gap** — especially relevant to robotics, embodied AI, and industrial tasks.
 
-For benchmark, evaluation, simulation, model-diagnostic, or scoring-heavy work, audit the measurement layer before treating a surprising failure as model or method evidence. Record audit outcomes in `.agent/measurement-audit.md` as `measurement_error`, `true_model_error`, or `mixed_or_ambiguous`.
+For benchmark, evaluation, simulation, model-diagnostic, or scoring-heavy work, audit the measurement layer before treating a surprising failure as system, model, method, controller, policy, workflow, or capability evidence. Record audit outcomes in `.agent/measurement-audit.md` as `measurement_error`, `true_system_error`, or `mixed_or_ambiguous`.
+
+`true_system_error` means the measurement layer is credible and the tested system or capability actually failed under the intended validation condition. Do not use it for infrastructure/API/timeout/execution failures.
 
 Then choose one action:
 

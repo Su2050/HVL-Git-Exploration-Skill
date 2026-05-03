@@ -573,7 +573,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--symptom", required=True)
     p.add_argument("--validation", required=True)
     p.add_argument("--checks", required=True, help="Prompt/schema/parser/scorer/data/metric checks performed")
-    p.add_argument("--verdict", choices=["measurement_error", "true_model_error", "mixed_or_ambiguous"], required=True)
+    p.add_argument("--verdict", choices=["measurement_error", "true_system_error", "mixed_or_ambiguous"], required=True)
     p.add_argument("--root-cause")
     p.add_argument("--evidence", required=True)
     p.add_argument("--action", required=True)
