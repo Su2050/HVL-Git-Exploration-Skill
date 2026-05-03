@@ -24,6 +24,7 @@ FILES = {
     "decision-tree.md": """# Decision Tree\n\n## N0 — Root goal\n\n- Parent: none\n- Question:\n- Candidate hypotheses:\n- Result: pending\n\n""",
     "assumptions.md": """# Assumptions\n\n## Active assumptions\n\n""",
     "experiment-log.md": """# Experiment Log\n\n## Experiments\n\n""",
+    "measurement-audit.md": """# Measurement Audit\n\n## Audits\n\nUse this for benchmark, evaluation, simulation, model-diagnostic, or scoring-heavy work when a failure may come from task wording, schema, parser, scorer, labels, data split, metric aggregation, or evaluation infrastructure.\n\n""",
     "source-ledger.md": """# Source Ledger\n\n## Sources Reviewed\n\nUse this when research triage is R2/R3, or when R1 uses user-provided sources. Record papers, official docs, repos, benchmark pages, blogs, issue threads, standards, and adjacent-domain sources.\n\n""",
     "prior-art-map.md": """# Prior-Art Map\n\n## Method Families\n\nUse this when research triage is R2/R3. Record existing solutions, baselines, assumptions, evidence strength, adaptation ideas, and risks.\n\n""",
     "hypothesis-backlog.md": """# Hypothesis Backlog\n\n## Research-Derived Candidate Hypotheses\n\nUse this when research triage is R2/R3. Record hypotheses derived from prior art before promoting them into decision-tree nodes.\n\n""",
@@ -423,6 +424,32 @@ def cmd_prior_art(args: argparse.Namespace) -> None:
         print("Recorded candidate hypothesis in .agent/hypothesis-backlog.md")
 
 
+def cmd_measurement_audit(args: argparse.Namespace) -> None:
+    ensure_agent_files()
+    entry = f"""
+
+---
+
+## {args.case}
+
+- Time: {now()}
+- Decision node: {args.node or 'TBD'}
+- Git branch: {current_branch()}
+- Commit: {current_commit()}
+- Symptom: {args.symptom}
+- Validation method: {args.validation}
+- Audit checks: {args.checks}
+- Verdict: {args.verdict}
+- Root cause: {args.root_cause or 'TBD'}
+- Evidence: {args.evidence}
+- Corrective action: {args.action}
+- Rerun / follow-up validation: {args.rerun or 'TBD'}
+- Next decision: {args.next or 'TBD'}
+"""
+    append(AGENT_DIR / "measurement-audit.md", entry)
+    print("Recorded measurement audit in .agent/measurement-audit.md")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="HVL Git State Machine helper")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -462,6 +489,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--evidence")
     p.add_argument("--result", choices=["pass", "fail", "inconclusive"], required=True)
     p.add_argument("--failure-classification", choices=[
+        "measurement_error",
         "execution_error",
         "wrong_hypothesis",
         "missing_prerequisite",
@@ -538,6 +566,20 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--expected")
     p.add_argument("--invalidating")
     p.set_defaults(func=cmd_prior_art)
+
+    p = sub.add_parser("measurement-audit", help="Record a measurement audit verdict")
+    p.add_argument("--case", required=True, help="Short name for the suspicious failure or metric issue")
+    p.add_argument("--node")
+    p.add_argument("--symptom", required=True)
+    p.add_argument("--validation", required=True)
+    p.add_argument("--checks", required=True, help="Prompt/schema/parser/scorer/data/metric checks performed")
+    p.add_argument("--verdict", choices=["measurement_error", "true_model_error", "mixed_or_ambiguous"], required=True)
+    p.add_argument("--root-cause")
+    p.add_argument("--evidence", required=True)
+    p.add_argument("--action", required=True)
+    p.add_argument("--rerun")
+    p.add_argument("--next")
+    p.set_defaults(func=cmd_measurement_audit)
 
     return parser
 

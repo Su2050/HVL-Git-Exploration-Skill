@@ -84,7 +84,7 @@ For R0/R1, do not delay implementation with broad research. Record the triage re
 Choose the smallest useful mode:
 
 - **Lightweight**: one `.agent/current-plan.md`, one `.agent/experiment-log.md`, one validation signal, and a Git checkpoint plan.
-- **Standard**: add `.agent/project-fit.md`, `.agent/source-ledger.md`, `.agent/prior-art-map.md`, `.agent/hypothesis-backlog.md`, `.agent/decision-tree.md`, `.agent/assumptions.md`, `.agent/validation.md`, `.agent/handoff.md`, and `.agent/risk-register.md`.
+- **Standard**: add `.agent/project-fit.md`, `.agent/source-ledger.md`, `.agent/prior-art-map.md`, `.agent/hypothesis-backlog.md`, `.agent/decision-tree.md`, `.agent/assumptions.md`, `.agent/experiment-log.md`, `.agent/measurement-audit.md`, `.agent/validation.md`, `.agent/handoff.md`, and `.agent/risk-register.md`.
 - **Research**: standard mode plus R2/R3 research triage, prior-art scouting when needed, and experiment tracking discipline for baselines, seeds, configs, metrics, curves, artifacts, videos, datasets, scenario versions, and statistical confidence.
 
 Prefer research mode for ML/RL, robotics, simulation, meta-learning, AutoML, benchmark design, and scientific/engineering research.
@@ -181,9 +181,33 @@ Statistical confidence:
 
 Git branches represent conceptual hypotheses. Concrete training runs, seeds, curves, videos, checkpoints, and metrics belong in experiment trackers or structured logs.
 
+## Measurement Integrity Gate
+
+For benchmark, evaluation, simulation, model-diagnostic, or scoring-heavy work, treat the measurement layer as a first-class hypothesis. Before attributing a failure to the model, method, policy, controller, or learned capability, check whether the result could be explained by measurement error.
+
+At minimum, inspect:
+
+- prompt or task wording ambiguity;
+- answer schema or output-format mismatch;
+- parser, extractor, scorer, or equivalence-rule failure;
+- retryable API, transport, timeout, or infrastructure errors;
+- data leakage, template leakage, duplicate rows, or split contamination;
+- label noise, adjudication ambiguity, or weak inter-annotator agreement;
+- metric aggregation that hides subgroup, surface, or difficulty effects.
+
+When evidence is surprising, clustered by surface/template, or statistically important, run a targeted measurement audit before revising the main hypothesis. Record the audit in `.agent/measurement-audit.md` or with `hvl.py measurement-audit`. Mark each suspicious failure as:
+
+```text
+measurement_error
+true_model_error
+mixed_or_ambiguous
+```
+
+If a measurement error is found, repair or quarantine the measurement layer, rerun the smallest decisive validation, and update the interpretation. If the experiment result is affected, record the experiment with failure classification `measurement_error`. Do not count a parse failure, schema mismatch, scorer false negative, or ambiguous prompt response as evidence of a weak model capability until measurement explanations have been ruled out.
+
 ## Research Roles
 
-Use these roles as thinking lenses. If subagents are explicitly allowed, assign them as parallel sidecar tasks; otherwise perform the roles sequentially:
+Use these roles as thinking lenses. For R2/R3, use the research roles below. For R0/R1, do not invoke broad Research Scout / Method Analyst work; use only lightweight Risk Critic and Experiment Designer checks unless the triage escalates. If subagents are explicitly allowed, assign eligible roles as parallel sidecar tasks; otherwise perform the roles sequentially:
 
 - **Research Scout**: find papers, official docs, repos, benchmarks, and serious technical writeups.
 - **Method Analyst**: extract methods, assumptions, evidence strength, and limits.
@@ -196,6 +220,7 @@ Use these roles as thinking lenses. If subagents are explicitly allowed, assign 
 
 When validation fails or is ambiguous, classify before editing again:
 
+- `measurement_error`: the observed failure comes from the task wording, answer schema, parser, scorer, metric, labels, data split, or evaluation pipeline rather than the tested capability.
 - `execution_error`: the hypothesis may be valid, but implementation was wrong.
 - `wrong_hypothesis`: the implementation tested the claim and evidence contradicted it.
 - `missing_prerequisite`: dependency, data, environment, permission, or API condition is absent.
@@ -205,7 +230,7 @@ When validation fails or is ambiguous, classify before editing again:
 - `randomness_or_low_confidence`: noisy training, one seed, unstable benchmark, or insufficient statistics.
 - `simulation_real_gap`: simulation evidence does not transfer to the target reality.
 
-Then choose exactly one next action: retry implementation, switch sibling hypothesis, split the node, backtrack to a parent checkpoint, redesign validation, isolate regression, or ask for missing external information.
+Then choose exactly one next action: repair or quarantine the measurement layer, retry implementation, switch sibling hypothesis, split the node, backtrack to a parent checkpoint, redesign validation, isolate regression, or ask for missing external information.
 
 Do not end the work after classification alone. Classification must produce an action unless a stop condition from the Persistence Contract applies.
 
@@ -232,6 +257,7 @@ Load only the reference needed for the current task:
 - `references/docs/05-failure-classification.md`: failure taxonomy and next actions.
 - `references/docs/11-rl-meta-research-guide.md`: ML/RL, robotics, simulation, and meta-learning guidance.
 - `references/templates/research-task-brief.md`: research task framing template.
+- `references/templates/measurement-audit.md`: measurement-layer audit template.
 - `references/templates/source-ledger.md`: source review template.
 - `references/templates/prior-art-map.md`: prior-art synthesis template.
 - `references/templates/hypothesis-backlog.md`: research-derived hypothesis template.

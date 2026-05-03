@@ -4,7 +4,21 @@
 
 如果 AI 把所有失败都当成“再改一下”，就会失控。
 
-## 1. Execution error — 执行错误
+## 1. Measurement error — 测量错误
+
+### 含义
+
+观察到的失败来自任务表述、答案格式、解析器、评分器、标签、数据切分、指标聚合或评估基础设施，而不是被测试能力本身。
+
+### 例子
+
+模型答案语义正确，但 scorer 因 schema mismatch 记为错误。
+
+### 下一步
+
+记录 `.agent/measurement-audit.md`，修复或隔离测量层，重新运行最小决定性验证。
+
+## 2. Execution error — 执行错误
 
 ### 含义
 
@@ -24,7 +38,7 @@
 
 不要放弃假设，先修正实现路径。
 
-## 2. Wrong hypothesis — 假设错误
+## 3. Wrong hypothesis — 假设错误
 
 ### 含义
 
@@ -42,7 +56,7 @@
 
 记录证据，退回当前节点，换兄弟假设。
 
-## 3. Missing prerequisite — 前置条件缺失
+## 4. Missing prerequisite — 前置条件缺失
 
 ### 含义
 
@@ -56,7 +70,7 @@
 
 先补前置条件，或者标记 blocked。
 
-## 4. Invalid validation method — 验证方法错误
+## 5. Invalid validation method — 验证方法错误
 
 ### 含义
 
@@ -70,7 +84,7 @@
 
 重新设计验证方法，不要用错误证据做决策。
 
-## 5. Unrelated regression — 无关回归
+## 6. Unrelated regression — 无关回归
 
 ### 含义
 
@@ -84,7 +98,7 @@
 
 隔离记录，不要把新问题混进当前假设。
 
-## 6. Ambiguous evidence — 证据不清
+## 7. Ambiguous evidence — 证据不清
 
 ### 含义
 
@@ -103,9 +117,10 @@
 ```text
 The validation failed. Before changing code again, classify the failure:
 1. Was the implementation faithful to the hypothesis?
-2. Did the validation actually test the target behavior?
-3. Is the failure caused by missing environment/data/dependency?
-4. Is this an unrelated regression?
-5. What evidence would distinguish execution error from wrong hypothesis?
+2. Could task wording, output schema, parser, scorer, labels, split, metric aggregation, or infrastructure explain the observed failure?
+3. Did the validation actually test the target behavior?
+4. Is the failure caused by missing environment/data/dependency?
+5. Is this an unrelated regression?
+6. What evidence would distinguish measurement error, execution error, and wrong hypothesis?
 Then decide whether to retry, switch hypothesis, split the problem, or backtrack.
 ```

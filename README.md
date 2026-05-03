@@ -17,6 +17,7 @@ HVL Git Exploration 是一个 Codex Skill，用于处理没有现成标准答案
 - Git checkpoint 和实验分支。
 - `.agent/*` 持久化推理记忆。
 - 基于验证证据的实验记录。
+- Measurement audit：区分测量错误、真实模型错误和混合不明。
 - 失败后先分类，再决定重试、换方案、拆分或回退。
 - sibling experiment 之间的 dirty worktree 防混入保护。
 - Persistence contract：持续推进，直到成功标准满足或遇到真实停止条件。
@@ -26,7 +27,7 @@ HVL Git Exploration 是一个 Codex Skill，用于处理没有现成标准答案
 ```text
 SKILL.md                 # Codex skill 入口
 agents/openai.yaml       # 可选 Codex UI 元数据
-scripts/hvl.py           # init/start/record/checkpoint/backtrack/status 辅助命令
+scripts/hvl.py           # triage/source/prior-art/start/record/measurement-audit 等辅助命令
 references/              # 详细协议文档和模板
 ```
 
@@ -90,6 +91,19 @@ python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py prior-art \
   --hypothesis "Adapting this baseline improves the target metric"
 ```
 
+记录测量审计：
+
+```bash
+python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py measurement-audit \
+  --case "Parser rejects valid answer" \
+  --symptom "Scores dropped on one output template" \
+  --validation "evaluation run 42" \
+  --checks "schema and scorer replay" \
+  --verdict measurement_error \
+  --evidence "manual review shows valid answer, parser mismatch" \
+  --action "fix parser and rerun affected cases"
+```
+
 开始一个实验分支：
 
 ```bash
@@ -144,6 +158,7 @@ It is designed for research-like engineering tasks, complex debugging, performan
 - Git checkpoints and experiment branches.
 - Persistent `.agent/*` reasoning files.
 - Validation-driven experiment records.
+- Measurement audit: distinguish measurement error, true model error, and mixed or ambiguous evidence.
 - Failure classification before retrying.
 - Dirty-worktree guards between sibling experiments.
 - Persistence contract: continue until success criteria are met or a real stop condition is reached.
@@ -153,7 +168,7 @@ It is designed for research-like engineering tasks, complex debugging, performan
 ```text
 SKILL.md                 # Codex skill entrypoint
 agents/openai.yaml       # Optional Codex UI metadata
-scripts/hvl.py           # Helper CLI for init/start/record/checkpoint/backtrack/status
+scripts/hvl.py           # Helper CLI for triage/source/prior-art/start/record/measurement-audit
 references/              # Detailed protocol docs and templates
 ```
 
@@ -215,6 +230,19 @@ python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py prior-art \
   --adaptation "How to adapt locally" \
   --risk "What may not transfer" \
   --hypothesis "Adapting this baseline improves the target metric"
+```
+
+Record a measurement audit:
+
+```bash
+python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py measurement-audit \
+  --case "Parser rejects valid answer" \
+  --symptom "Scores dropped on one output template" \
+  --validation "evaluation run 42" \
+  --checks "schema and scorer replay" \
+  --verdict measurement_error \
+  --evidence "manual review shows valid answer, parser mismatch" \
+  --action "fix parser and rerun affected cases"
 ```
 
 Start an experiment branch:

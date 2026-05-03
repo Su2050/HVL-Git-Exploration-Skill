@@ -52,6 +52,7 @@ Use these files as persistent memory:
 .agent/decision-tree.md
 .agent/assumptions.md
 .agent/experiment-log.md
+.agent/measurement-audit.md
 .agent/validation.md
 .agent/handoff.md
 .agent/risk-register.md
@@ -110,14 +111,17 @@ For scientific research, ML, RL, robotics, simulation, or meta-learning tasks:
 
 When validation fails, do not blindly patch again. First classify the failure:
 
-1. **Execution error** — the hypothesis might be valid, but the implementation was wrong.
-2. **Wrong hypothesis** — the implementation was faithful, but evidence contradicts the hypothesis.
-3. **Missing prerequisite** — a dependency, environment, data, permission, or API condition is absent.
-4. **Invalid validation method** — the test/log/check does not actually measure the target behavior.
-5. **Unrelated regression** — the change exposed or introduced a separate issue.
-6. **Ambiguous evidence** — the result is not strong enough to decide.
-7. **Randomness / insufficient statistical confidence** — especially relevant to training and simulation tasks.
-8. **Simulation-real gap** — especially relevant to robotics, embodied AI, and industrial tasks.
+1. **Measurement error** — task wording, answer schema, parser, scorer, labels, data split, metric aggregation, or evaluation infrastructure explains the observed failure.
+2. **Execution error** — the hypothesis might be valid, but the implementation was wrong.
+3. **Wrong hypothesis** — the implementation was faithful, but evidence contradicts the hypothesis.
+4. **Missing prerequisite** — a dependency, environment, data, permission, or API condition is absent.
+5. **Invalid validation method** — the test/log/check does not actually measure the target behavior.
+6. **Unrelated regression** — the change exposed or introduced a separate issue.
+7. **Ambiguous evidence** — the result is not strong enough to decide.
+8. **Randomness / insufficient statistical confidence** — especially relevant to training and simulation tasks.
+9. **Simulation-real gap** — especially relevant to robotics, embodied AI, and industrial tasks.
+
+For benchmark, evaluation, simulation, model-diagnostic, or scoring-heavy work, audit the measurement layer before treating a surprising failure as model or method evidence. Record audit outcomes in `.agent/measurement-audit.md` as `measurement_error`, `true_model_error`, or `mixed_or_ambiguous`.
 
 Then choose one action:
 
@@ -180,6 +184,7 @@ python3 scripts/hvl.py status
 python3 scripts/hvl.py triage --level R0 --reason "Clear implementation path" --scope "No external scouting" --decision "Proceed with local validation"
 python3 scripts/hvl.py source --title "..." --type paper --priority P0 --takeaway "..." --confidence high --relevance "..."
 python3 scripts/hvl.py prior-art --method "..." --problem "..." --idea "..." --evidence "..." --confidence medium --adaptation "..." --risk "..." --hypothesis "..."
+python3 scripts/hvl.py measurement-audit --case "..." --symptom "..." --validation "..." --checks "..." --verdict measurement_error --evidence "..." --action "..."
 python3 scripts/hvl.py start --node N1 --title "Fix login timeout" --hypothesis "The timeout is caused by stale token refresh state"
 python3 scripts/hvl.py record --node N1 --hypothesis "..." --changes "..." --validation "pytest ..." --result fail --reflection "..." --next "Try sibling hypothesis B"
 python3 scripts/hvl.py checkpoint --message "checkpoint: validated token refresh fix" --all

@@ -77,6 +77,7 @@ Failure cases:
 ## Failure classification
 
 - [ ] Execution error
+- [ ] Measurement error
 - [ ] Wrong hypothesis
 - [ ] Missing prerequisite
 - [ ] Invalid validation method

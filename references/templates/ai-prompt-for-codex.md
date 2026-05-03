@@ -18,8 +18,9 @@ Rules:
 7. Before coding, update .agent/current-plan.md, .agent/decision-tree.md, and .agent/validation.md.
 8. Make one conceptual change per commit.
 9. After each experiment, run validation and update .agent/experiment-log.md.
-10. If validation fails, classify the failure before changing code again.
-11. Update .agent/handoff.md before stopping.
+10. For benchmark/evaluation/scoring-heavy failures, audit measurement first and record .agent/measurement-audit.md when relevant.
+11. If validation fails, classify the failure before changing code again.
+12. Update .agent/handoff.md before stopping.
 
 Do not claim success without validation evidence.
 ```

@@ -81,6 +81,7 @@ Backtrack target:
 Result:
 Evidence:
 Failure classification:
+Measurement audit needed/result:
 Reflection:
 Next decision:
 ```

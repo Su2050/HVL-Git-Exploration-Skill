@@ -112,24 +112,30 @@ python3 scripts/hvl.py record \
 失败必须分类，不允许直接继续乱改。
 
 ```text
+measurement_error
 execution_error
 wrong_hypothesis
 missing_prerequisite
 invalid_validation
 unrelated_regression
 ambiguous_evidence
+randomness_or_low_confidence
+simulation_real_gap
 ```
 
 ## 9. 决策
 
 | 失败类型 | 下一步 |
 |---|---|
+| measurement_error | 修复或隔离测量层，重新运行最小验证 |
 | execution_error | 当前假设可能对，修正实现后重试 |
 | wrong_hypothesis | 放弃该假设，切换兄弟分支 |
 | missing_prerequisite | 先解决前置条件或标记阻塞 |
 | invalid_validation | 重写验证方式 |
 | unrelated_regression | 隔离回归，不把它混进当前假设 |
 | ambiguous_evidence | 拆成更小的子假设 |
+| randomness_or_low_confidence | 增强统计设计或重复关键实验 |
+| simulation_real_gap | 回到环境建模或迁移验证节点 |
 
 ## 10. 交接
 
