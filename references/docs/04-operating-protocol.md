@@ -94,6 +94,16 @@ make test
 - 是否通过；
 - 有没有新问题。
 
+多因素系统还要记录：
+
+- 可能影响结果的因素清单；
+- 本次实验正在验证的单一因素；
+- 保持不变的控制因素；
+- 本次改变的因素；
+- 如果是组合实验，它对应哪些已验证的单因素基线。
+
+优先先做单因素主效应验证，再做组合实验。只有当组合结果能追溯到对应单因素基线时，组合实验才有清晰归因价值。
+
 ## 7. 记录实验
 
 ```bash
@@ -118,6 +128,7 @@ wrong_hypothesis
 missing_prerequisite
 invalid_validation
 unrelated_regression
+factor_confounding
 ambiguous_evidence
 randomness_or_low_confidence
 simulation_real_gap
@@ -133,6 +144,7 @@ simulation_real_gap
 | missing_prerequisite | 先解决前置条件或标记阻塞 |
 | invalid_validation | 重写验证方式 |
 | unrelated_regression | 隔离回归，不把它混进当前假设 |
+| factor_confounding | 回到最近的单因素基线，拆分因素后重新验证 |
 | ambiguous_evidence | 拆成更小的子假设 |
 | randomness_or_low_confidence | 增强统计设计或重复关键实验 |
 | simulation_real_gap | 回到环境建模或迁移验证节点 |

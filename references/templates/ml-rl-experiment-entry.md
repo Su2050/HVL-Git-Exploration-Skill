@@ -31,6 +31,10 @@ Invalidating evidence:
 ## Change
 
 ```text
+Factor under test:
+Controlled factors:
+Changed factors:
+Combination prerequisite baselines:
 Code/config change:
 Reward change:
 Observation/action change:
@@ -82,6 +86,7 @@ Failure cases:
 - [ ] Missing prerequisite
 - [ ] Invalid validation method
 - [ ] Unrelated regression
+- [ ] Factor confounding
 - [ ] Ambiguous evidence
 - [ ] Randomness / insufficient statistical confidence
 - [ ] Simulation-real gap

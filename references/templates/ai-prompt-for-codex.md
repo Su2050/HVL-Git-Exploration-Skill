@@ -17,10 +17,11 @@ Rules:
 6. Use Git checkpoints and codex/hvl-* branches as the external state machine.
 7. Before coding, update .agent/current-plan.md, .agent/decision-tree.md, and .agent/validation.md.
 8. Make one conceptual change per commit.
-9. After each experiment, run validation and update .agent/experiment-log.md.
-10. For benchmark/evaluation/scoring-heavy failures, audit measurement first and record .agent/measurement-audit.md when relevant.
-11. If validation fails, classify the failure before changing code again.
-12. Update .agent/handoff.md before stopping.
+9. For multi-factor work, identify factors first, prefer single-factor validation before combinations, and keep combination results traceable to single-factor baselines.
+10. After each experiment, run validation and update .agent/experiment-log.md.
+11. For benchmark/evaluation/scoring-heavy failures, audit measurement first and record .agent/measurement-audit.md when relevant.
+12. If validation fails, classify the failure before changing code again.
+13. Update .agent/handoff.md before stopping.
 
 Do not claim success without validation evidence.
 ```

@@ -123,6 +123,14 @@ One experiment should test one conceptual claim. Avoid mixing unrelated changes 
 - reward change plus observation change plus algorithm change;
 - UI redesign plus data model change.
 
+For multi-factor systems (ML/RL, robotics, simulation, AutoML, hyperparameter tuning, performance work, etc.), isolate factors before combining them:
+
+- identify the factor list that could plausibly influence the outcome;
+- prefer validating single-factor main effects before running combination experiments;
+- keep non-tested factors stable or explicitly record why they cannot be held stable;
+- run combination experiments only when the result can be traced back to relevant single-factor baselines;
+- if attribution is unclear because multiple factors changed at once, split the node or backtrack to the last stable single-factor checkpoint.
+
 For each experiment, record:
 
 ```text
@@ -172,6 +180,10 @@ For research / ML / RL work, also record:
 Environment version:
 Dataset or scenario version:
 Config:
+Factor under test:
+Controlled factors:
+Changed factors:
+Combination prerequisite baselines:
 Seeds:
 Metrics:
 Artifacts:
@@ -228,11 +240,12 @@ When validation fails or is ambiguous, classify before editing again:
 - `missing_prerequisite`: dependency, data, environment, permission, or API condition is absent.
 - `invalid_validation`: the validation does not actually measure the target.
 - `unrelated_regression`: a separate issue appeared and must be isolated.
+- `factor_confounding`: multiple plausible factors changed together, so the observed effect cannot be attributed to one factor.
 - `ambiguous_evidence`: evidence is too weak to decide.
 - `randomness_or_low_confidence`: noisy training, one seed, unstable benchmark, or insufficient statistics.
 - `simulation_real_gap`: simulation evidence does not transfer to the target reality.
 
-Then choose exactly one next action: repair or quarantine the measurement layer, retry implementation, switch sibling hypothesis, split the node, backtrack to a parent checkpoint, redesign validation, isolate regression, or ask for missing external information.
+Then choose exactly one next action: repair or quarantine the measurement layer, retry implementation, switch sibling hypothesis, split the node, backtrack to a parent or single-factor checkpoint, redesign validation, isolate regression, or ask for missing external information.
 
 Do not end the work after classification alone. Classification must produce an action unless a stop condition from the Persistence Contract applies.
 

@@ -98,7 +98,21 @@
 
 隔离记录，不要把新问题混进当前假设。
 
-## 7. Ambiguous evidence — 证据不清
+## 7. Factor confounding — 因素混杂
+
+### 含义
+
+多个可能影响结果的因素同时变化，导致无法判断到底是哪一个因素造成了观察到的效果。
+
+### 例子
+
+一次 RL 实验里同时改了奖励函数、观测空间和学习率。成功率变化了，但证据不能说明提升来自奖励、观测、超参，还是它们的组合。
+
+### 下一步
+
+退回最近的单因素基线，列出因素清单，先分别验证单因素主效应，再进入可追溯的组合实验。
+
+## 8. Ambiguous evidence — 证据不清
 
 ### 含义
 
@@ -121,6 +135,7 @@ The validation failed. Before changing code again, classify the failure:
 3. Did the validation actually test the target behavior?
 4. Is the failure caused by missing environment/data/dependency?
 5. Is this an unrelated regression?
-6. What evidence would distinguish measurement error, execution error, and wrong hypothesis?
+6. Did multiple plausible factors change at once, making attribution impossible?
+7. What evidence would distinguish measurement error, execution error, factor confounding, and wrong hypothesis?
 Then decide whether to retry, switch hypothesis, split the problem, or backtrack.
 ```

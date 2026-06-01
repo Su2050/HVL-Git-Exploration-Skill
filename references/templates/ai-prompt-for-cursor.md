@@ -11,6 +11,7 @@ For this task, enter HVL mode:
 - create or use a Git checkpoint;
 - use one branch per major hypothesis;
 - validate after each focused change;
+- for multi-factor work, identify factors first, prefer single-factor validation before combinations, and keep combination results traceable to single-factor baselines;
 - audit measurement before treating scoring/evaluation failures as model or method evidence;
 - record results in .agent/experiment-log.md;
 - update .agent/handoff.md before stopping.

@@ -17,6 +17,7 @@ HVL Git Exploration 是一个 Codex Skill，用于处理没有现成标准答案
 - Git checkpoint 和实验分支。
 - `.agent/*` 持久化推理记忆。
 - 基于验证证据的实验记录。
+- 多因素实验的因素隔离：先识别因素，优先单因素验证，再做可追溯的组合实验。
 - Measurement audit：区分测量错误、真实系统错误和混合不明。
 - 失败后先分类，再决定重试、换方案、拆分或回退。
 - sibling experiment 之间的 dirty worktree 防混入保护。
@@ -158,7 +159,8 @@ It is designed for research-like engineering tasks, complex debugging, performan
 - Git checkpoints and experiment branches.
 - Persistent `.agent/*` reasoning files.
 - Validation-driven experiment records.
-- Measurement audit: distinguish measurement error, true model error, and mixed or ambiguous evidence.
+- Factor isolation for multi-factor experiments: identify factors, prefer single-factor validation, then run traceable combination experiments.
+- Measurement audit: distinguish measurement error, true system error, and mixed or ambiguous evidence.
 - Failure classification before retrying.
 - Dirty-worktree guards between sibling experiments.
 - Persistence contract: continue until success criteria are met or a real stop condition is reached.

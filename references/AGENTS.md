@@ -33,11 +33,12 @@ Behave like an expert investigator:
 6. Create a Git checkpoint before risky changes.
 7. Use a dedicated branch or commit for each hypothesis.
 8. Make one conceptual change at a time.
-9. Validate with tests, logs, runtime checks, artifact inspection, training metrics, simulation results, benchmark results, or clearly stated manual checks.
-10. Record the hypothesis, change, evidence, result, and reflection in `.agent/experiment-log.md`.
-11. If validation fails, classify the failure before continuing.
-12. Decide whether to retry the current node, switch to a sibling hypothesis, split the problem, escalate research triage, or backtrack to a parent checkpoint.
-13. Keep `.agent/handoff.md` updated so another AI or human can continue after context compression.
+9. For multi-factor systems, identify the factor list, prefer single-factor validation before combination experiments, and keep combination results traceable to single-factor baselines.
+10. Validate with tests, logs, runtime checks, artifact inspection, training metrics, simulation results, benchmark results, or clearly stated manual checks.
+11. Record the hypothesis, change, evidence, result, and reflection in `.agent/experiment-log.md`.
+12. If validation fails, classify the failure before continuing.
+13. Decide whether to retry the current node, switch to a sibling hypothesis, split the problem, escalate research triage, or backtrack to a parent checkpoint.
+14. Keep `.agent/handoff.md` updated so another AI or human can continue after context compression.
 
 ## Required files
 
@@ -101,11 +102,14 @@ For scientific research, ML, RL, robotics, simulation, or meta-learning tasks:
 1. Start with research triage. Use R0/R1 for clear low-risk work; use R2/R3 only when external knowledge is needed.
 2. For R2/R3, search for closest prior art: papers, official code, benchmark pages, standards, serious technical blogs, issues, postmortems, and adjacent-domain analogies.
 3. Prefer source priority P0 official papers/code/docs/benchmarks, then P1 high-quality repos/repro reports/blogs, then P2 issues/discussions, then P3 speculative analogies.
-4. Use Git branches for conceptual hypotheses, not for every seed or hyperparameter run.
-5. Use experiment trackers, logs, notebooks, or structured files for concrete runs, seeds, metrics, curves, videos, checkpoints, and artifacts.
-6. Record environment version, data/scenario version, reward/config changes, observation/action changes, seeds, metrics, and failure modes.
-7. Treat noisy or one-seed results as inconclusive unless the validation plan says otherwise.
-8. Do not claim algorithmic success without baseline comparison and enough evidence for the task context.
+4. For multi-factor outcomes, list plausible factors first; validate single-factor main effects before combination experiments when practical.
+5. Keep non-tested factors stable or explicitly record why they cannot be held stable.
+6. Run combination experiments only when their results can be traced to the relevant single-factor baselines.
+7. Use Git branches for conceptual hypotheses, not for every seed or hyperparameter run.
+8. Use experiment trackers, logs, notebooks, or structured files for concrete runs, seeds, metrics, curves, videos, checkpoints, and artifacts.
+9. Record environment version, data/scenario version, reward/config changes, observation/action changes, factor under test, controlled factors, changed factors, seeds, metrics, and failure modes.
+10. Treat noisy or one-seed results as inconclusive unless the validation plan says otherwise.
+11. Do not claim algorithmic success without baseline comparison and enough evidence for the task context.
 
 ## Failure classification
 
@@ -117,9 +121,10 @@ When validation fails, do not blindly patch again. First classify the failure:
 4. **Missing prerequisite** — a dependency, environment, data, permission, or API condition is absent.
 5. **Invalid validation method** — the test/log/check does not actually measure the target behavior.
 6. **Unrelated regression** — the change exposed or introduced a separate issue.
-7. **Ambiguous evidence** — the result is not strong enough to decide.
-8. **Randomness / insufficient statistical confidence** — especially relevant to training and simulation tasks.
-9. **Simulation-real gap** — especially relevant to robotics, embodied AI, and industrial tasks.
+7. **Factor confounding** — multiple plausible factors changed together, so the observed effect cannot be attributed to one factor.
+8. **Ambiguous evidence** — the result is not strong enough to decide.
+9. **Randomness / insufficient statistical confidence** — especially relevant to training and simulation tasks.
+10. **Simulation-real gap** — especially relevant to robotics, embodied AI, and industrial tasks.
 
 For benchmark, evaluation, simulation, model-diagnostic, or scoring-heavy work, audit the measurement layer before treating a surprising failure as system, model, method, controller, policy, workflow, or capability evidence. Record audit outcomes in `.agent/measurement-audit.md` as `measurement_error`, `true_system_error`, or `mixed_or_ambiguous`.
 
@@ -130,7 +135,7 @@ Then choose one action:
 - retry current node with a corrected implementation;
 - switch to sibling hypothesis;
 - split the hypothesis into smaller sub-hypotheses;
-- backtrack to a parent checkpoint;
+- backtrack to a parent or single-factor checkpoint;
 - redesign the validation method;
 - ask for missing external information only if the task cannot proceed safely without it.
 

@@ -109,7 +109,7 @@ Treat every solution as a hypothesis. Use Git as the external state machine. Use
 科研/训练任务可以加一句：
 
 ```text
-For ML/RL/research tasks, use Git branches for conceptual hypotheses and experiment trackers for concrete training runs, seeds, metrics, curves, logs, and artifacts.
+For ML/RL/research tasks, use Git branches for conceptual hypotheses and experiment trackers for concrete training runs, seeds, metrics, curves, logs, and artifacts. For multi-factor outcomes, validate single-factor effects before combination experiments when practical.
 ```
 
 ## 7. 能力边界

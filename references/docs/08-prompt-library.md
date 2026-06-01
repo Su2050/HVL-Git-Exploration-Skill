@@ -33,14 +33,31 @@ Write the result to .agent/decision-tree.md and .agent/assumptions.md.
 ```text
 The last attempt failed.
 Before changing code again, classify the failure:
+- measurement error;
 - execution error;
 - wrong hypothesis;
 - missing prerequisite;
 - invalid validation method;
 - unrelated regression;
-- ambiguous evidence.
+- factor confounding;
+- ambiguous evidence;
+- randomness or insufficient statistical confidence;
+- simulation-real gap.
 
 Use git diff, logs, tests, and .agent/experiment-log.md as evidence. Then decide whether to retry this node, switch to a sibling hypothesis, split the problem, or backtrack to the parent checkpoint.
+```
+
+## 3.1 多因素实验先隔离再组合
+
+```text
+This is a multi-factor task.
+Before running combination experiments:
+- list the plausible factors;
+- choose the single factor under test;
+- state which factors are held stable;
+- define the single-factor baseline;
+- only combine factors after the relevant single-factor effects are validated.
+If attribution is unclear because multiple factors changed together, classify the result as factor_confounding and split the node.
 ```
 
 ## 4. 让 AI 使用 Git 分支探索多个方案

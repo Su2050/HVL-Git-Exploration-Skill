@@ -58,8 +58,10 @@ Invalidating evidence:
 
 ```text
 Minimal change:
+Factor under test:
 Controlled variables:
 Changed variables:
+Combination prerequisite baselines:
 Training/evaluation command:
 Metrics:
 Artifacts:

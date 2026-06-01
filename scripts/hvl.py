@@ -495,6 +495,7 @@ def build_parser() -> argparse.ArgumentParser:
         "missing_prerequisite",
         "invalid_validation",
         "unrelated_regression",
+        "factor_confounding",
         "ambiguous_evidence",
         "randomness_or_low_confidence",
         "simulation_real_gap",

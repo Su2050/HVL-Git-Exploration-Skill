@@ -22,6 +22,15 @@
 2.
 3.
 
+## Factors for multi-factor tasks
+
+```text
+Plausible factors:
+Factor under test:
+Controlled factors:
+Combination prerequisite baselines:
+```
+
 ## Validation commands
 
 ```bash
