@@ -24,7 +24,7 @@ First convert this task into a decision tree:
 - main decision nodes;
 - candidate hypotheses at each node;
 - validation signal for each hypothesis;
-- what would make us retry, switch hypothesis, or backtrack.
+- what evidence must return to the node before we retry, switch hypothesis, split, advance, or backtrack.
 Write the result to .agent/decision-tree.md and .agent/assumptions.md.
 ```
 
@@ -44,7 +44,7 @@ Before changing code again, classify the failure:
 - randomness or insufficient statistical confidence;
 - simulation-real gap.
 
-Use git diff, logs, tests, and .agent/experiment-log.md as evidence. Then decide whether to retry this node, switch to a sibling hypothesis, split the problem, or backtrack to the parent checkpoint.
+Use git diff, logs, tests, and .agent/experiment-log.md as evidence. Then return the evidence to the decision node and decide whether to retry this node, switch to a sibling hypothesis, split the problem, advance, or backtrack to the parent checkpoint.
 ```
 
 ## 3.1 多因素实验先隔离再组合

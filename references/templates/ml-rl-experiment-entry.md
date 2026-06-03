@@ -97,6 +97,9 @@ Failure cases:
 What did we learn?
 What should be repeated?
 What should be abandoned?
-Which node should we return to?
+Returned evidence:
+Node reconsideration:
+Decision after revisit:
+Continue to:
 What is the next concrete experiment?
 ```

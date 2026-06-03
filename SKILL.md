@@ -107,9 +107,10 @@ python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py init
 9. Make the smallest conceptual change that tests the active hypothesis.
 10. Validate using the strongest practical evidence.
 11. Record result, evidence, failure classification, reflection, next decision, branch, and commit in `.agent/experiment-log.md`.
-12. Save the experiment state before starting a sibling experiment. Use `record --commit --all`, `checkpoint --all`, or an intentional manual `git add` / `git commit`.
-13. If success criteria are not met and no stop condition applies, immediately select the next experiment or escalate research triage when local evidence suggests missing knowledge.
-14. Update `.agent/handoff.md` before pausing, context compression, branch switch, or final handoff.
+12. Return the evidence to the active decision node and record the node reconsideration before moving forward, retrying, switching siblings, splitting, or backtracking.
+13. Save the experiment state before starting a sibling experiment. Use `record --commit --all`, `checkpoint --all`, or an intentional manual `git add` / `git commit`.
+14. If success criteria are not met and no stop condition applies, immediately select the next experiment or escalate research triage when local evidence suggests missing knowledge.
+15. Update `.agent/handoff.md` before pausing, context compression, branch switch, or final handoff.
 
 The helper refuses to create a new experiment branch from a dirty worktree unless `--checkpoint-before` or `--allow-dirty` is explicit. This prevents one experiment's uncommitted code from leaking into the next experiment.
 
@@ -141,6 +142,10 @@ Observed evidence:
 Result: pass / fail / inconclusive
 Failure classification:
 Reflection:
+Returned evidence:
+Node reconsideration:
+Decision after revisit:
+Continue to:
 Next decision:
 Git branch:
 Commit:
@@ -173,6 +178,40 @@ python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py start \
 ```
 
 If the current branch has uncommitted work, `start` stops and asks for an explicit commit/checkpoint decision.
+
+## Node Reconsideration Loop
+
+Experiments are not a linear chain of attempts. Treat each experiment result as evidence returned to its decision node. Before editing again, starting a sibling branch, advancing to the next node, or backtracking:
+
+1. Re-read the node question, chosen hypothesis, validation signal, and exit condition.
+2. Compare returned evidence against the expected and invalidating evidence.
+3. Decide whether the node is resolved, still worth retrying, needs a sibling hypothesis, should be split into smaller subnodes, needs a validation or measurement repair, or should backtrack to a parent / single-factor checkpoint.
+4. Record the reconsideration in `.agent/decision-tree.md` and `.agent/experiment-log.md`.
+5. Only advance to a child or next node when the node's exit condition has been met by evidence.
+
+Use these fields:
+
+```text
+Returned evidence:
+Node reconsideration:
+Decision after revisit: retry_current / switch_sibling / split_node / backtrack_parent / backtrack_single_factor / advance_next_node / repair_measurement / redesign_validation / isolate_regression / ask_external_info
+Continue to:
+Next concrete action:
+```
+
+To record the loop explicitly:
+
+```bash
+python3 ~/.codex/skills/hvl-git-exploration/scripts/hvl.py reconsider \
+  --node N1 \
+  --from-experiment E1 \
+  --returned-evidence "Validation still fails after the token refresh fix" \
+  --interpretation "H1 is contradicted; request queue deadlock remains plausible" \
+  --decision switch_sibling \
+  --continue-to "N1 sibling: request queue hypothesis" \
+  --next "Start a sibling branch for the request queue hypothesis" \
+  --update-handoff
+```
 
 For research / ML / RL work, also record:
 
@@ -245,7 +284,7 @@ When validation fails or is ambiguous, classify before editing again:
 - `randomness_or_low_confidence`: noisy training, one seed, unstable benchmark, or insufficient statistics.
 - `simulation_real_gap`: simulation evidence does not transfer to the target reality.
 
-Then choose exactly one next action: repair or quarantine the measurement layer, retry implementation, switch sibling hypothesis, split the node, backtrack to a parent or single-factor checkpoint, redesign validation, isolate regression, or ask for missing external information.
+Then return the evidence to the active decision node and choose exactly one next action: repair or quarantine the measurement layer, retry implementation, switch sibling hypothesis, split the node, backtrack to a parent or single-factor checkpoint, redesign validation, isolate regression, or ask for missing external information.
 
 Do not end the work after classification alone. Classification must produce an action unless a stop condition from the Persistence Contract applies.
 

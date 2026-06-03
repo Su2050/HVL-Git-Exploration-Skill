@@ -85,5 +85,9 @@ Evidence:
 Failure classification:
 Measurement audit needed/result:
 Reflection:
+Returned evidence:
+Node reconsideration:
+Decision after revisit:
+Continue to:
 Next decision:
 ```

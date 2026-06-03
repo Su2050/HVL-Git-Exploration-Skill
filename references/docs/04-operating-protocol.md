@@ -117,7 +117,29 @@ python3 scripts/hvl.py record \
   --next "Backtrack to N1 and test request queue hypothesis"
 ```
 
-## 8. 失败后分类
+## 8. 回到节点复议
+
+实验结果不是让探索线性往前走，而是作为证据回到当前决策节点重新判断。
+
+```bash
+python3 scripts/hvl.py reconsider \
+  --node N1 \
+  --from-experiment E1 \
+  --returned-evidence "Token refresh fix did not remove the timeout" \
+  --interpretation "The refresh-state hypothesis is contradicted; request queue remains plausible" \
+  --decision switch_sibling \
+  --continue-to "N1 sibling: request queue hypothesis" \
+  --next "Start a sibling branch for the request queue hypothesis"
+```
+
+复议时至少回答：
+
+- 返回节点的证据是什么；
+- 这个证据如何改变当前节点判断；
+- 是重试当前假设、换兄弟假设、拆节点、修验证、前进，还是回退；
+- 下一步进入哪个节点、分支、checkpoint 或阻塞状态。
+
+## 9. 失败后分类
 
 失败必须分类，不允许直接继续乱改。
 
@@ -134,7 +156,7 @@ randomness_or_low_confidence
 simulation_real_gap
 ```
 
-## 9. 决策
+## 10. 决策
 
 | 失败类型 | 下一步 |
 |---|---|
@@ -149,7 +171,7 @@ simulation_real_gap
 | randomness_or_low_confidence | 增强统计设计或重复关键实验 |
 | simulation_real_gap | 回到环境建模或迁移验证节点 |
 
-## 10. 交接
+## 11. 交接
 
 每次自然暂停时更新：
 

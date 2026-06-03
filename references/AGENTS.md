@@ -37,7 +37,7 @@ Behave like an expert investigator:
 10. Validate with tests, logs, runtime checks, artifact inspection, training metrics, simulation results, benchmark results, or clearly stated manual checks.
 11. Record the hypothesis, change, evidence, result, and reflection in `.agent/experiment-log.md`.
 12. If validation fails, classify the failure before continuing.
-13. Decide whether to retry the current node, switch to a sibling hypothesis, split the problem, escalate research triage, or backtrack to a parent checkpoint.
+13. Return the evidence to the active decision node, record node reconsideration, and decide whether to retry the current node, switch to a sibling hypothesis, split the problem, escalate research triage, advance, or backtrack to a parent checkpoint.
 14. Keep `.agent/handoff.md` updated so another AI or human can continue after context compression.
 
 ## Required files
@@ -139,6 +139,18 @@ Then choose one action:
 - redesign the validation method;
 - ask for missing external information only if the task cannot proceed safely without it.
 
+## Node reconsideration loop
+
+Every experiment result is evidence returned to its decision node. Before editing again, starting a sibling branch, advancing, or backtracking, record:
+
+- returned evidence;
+- node reconsideration;
+- decision after revisit;
+- continue target;
+- next concrete action.
+
+Use `hvl.py reconsider` when the transition matters enough to preserve for a future agent.
+
 ## Backtracking rules
 
 A failed attempt is not automatically useless. Preserve useful evidence.
@@ -194,5 +206,6 @@ python3 scripts/hvl.py prior-art --method "..." --problem "..." --idea "..." --e
 python3 scripts/hvl.py measurement-audit --case "..." --symptom "..." --validation "..." --checks "..." --verdict measurement_error --evidence "..." --action "..."
 python3 scripts/hvl.py start --node N1 --title "Fix login timeout" --hypothesis "The timeout is caused by stale token refresh state"
 python3 scripts/hvl.py record --node N1 --hypothesis "..." --changes "..." --validation "pytest ..." --result fail --reflection "..." --next "Try sibling hypothesis B"
+python3 scripts/hvl.py reconsider --node N1 --returned-evidence "..." --interpretation "..." --decision switch_sibling --continue-to "N1 sibling hypothesis B" --next "Start sibling branch"
 python3 scripts/hvl.py checkpoint --message "checkpoint: validated token refresh fix" --all
 ```

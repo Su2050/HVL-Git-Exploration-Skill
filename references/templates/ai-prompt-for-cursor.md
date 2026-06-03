@@ -16,5 +16,5 @@ For this task, enter HVL mode:
 - record results in .agent/experiment-log.md;
 - update .agent/handoff.md before stopping.
 
-If a validation fails, do not continue coding until you classify the failure and decide whether to retry, switch hypothesis, split, or backtrack.
+If a validation fails, do not continue coding until you classify the failure, return the evidence to the decision node, and decide whether to retry, switch hypothesis, split, advance, or backtrack.
 ```

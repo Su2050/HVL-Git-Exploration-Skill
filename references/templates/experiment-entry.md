@@ -16,4 +16,8 @@
 - Combination baseline(s):
 - Failure classification: measurement_error / execution_error / wrong_hypothesis / missing_prerequisite / invalid_validation / unrelated_regression / factor_confounding / ambiguous_evidence / randomness_or_low_confidence / simulation_real_gap / N/A
 - Reflection:
+- Returned evidence:
+- Node reconsideration:
+- Decision after revisit: retry_current / switch_sibling / split_node / backtrack_parent / backtrack_single_factor / advance_next_node / repair_measurement / redesign_validation / isolate_regression / ask_external_info
+- Continue to:
 - Next decision:

@@ -21,7 +21,7 @@ AGENT_DIR = ROOT / ".agent"
 
 FILES = {
     "current-plan.md": """# Current Plan\n\n## Target outcome\n\n## Success criteria\n\n## Completion gate\n\n- What evidence proves the task is done:\n- What validation must pass:\n\n## Stop conditions\n\n- User pause/stop:\n- Missing external input/permission/resource:\n- Unsafe or destructive risk:\n- Long-running external wait:\n\n## Current decision node\n\n## Next concrete action\n\n""",
-    "decision-tree.md": """# Decision Tree\n\n## N0 — Root goal\n\n- Parent: none\n- Question:\n- Candidate hypotheses:\n- Result: pending\n\n""",
+    "decision-tree.md": """# Decision Tree\n\n## N0 — Root goal\n\n- Parent: none\n- Question:\n- Candidate hypotheses:\n- Returned evidence:\n- Node reconsideration:\n- Decision after revisit:\n- Continue to:\n- Result: pending\n\n""",
     "assumptions.md": """# Assumptions\n\n## Active assumptions\n\n""",
     "experiment-log.md": """# Experiment Log\n\n## Experiments\n\n""",
     "measurement-audit.md": """# Measurement Audit\n\n## Audits\n\nUse this for benchmark, evaluation, simulation, model-diagnostic, or scoring-heavy work when a failure may come from task wording, schema, parser, scorer, labels, data split, metric aggregation, or evaluation infrastructure.\n\n""",
@@ -334,6 +334,39 @@ def cmd_backtrack(args: argparse.Namespace) -> None:
         print(f"Checked out {args.target}")
 
 
+def cmd_reconsider(args: argparse.Namespace) -> None:
+    ensure_git_repo()
+    ensure_agent_files()
+    branch = current_branch()
+    commit = current_commit()
+    entry = f"""
+
+---
+
+## Reconsideration — {args.node} — {now()}
+
+- From branch: {branch}
+- From commit: {commit}
+- From experiment: {args.from_experiment or 'TBD'}
+- Returned evidence: {args.returned_evidence}
+- Node reconsideration: {args.interpretation}
+- Decision after revisit: {args.decision}
+- Continue to: {args.continue_to}
+- Next concrete action: {args.next}
+"""
+    append(AGENT_DIR / "decision-tree.md", entry)
+    append(AGENT_DIR / "experiment-log.md", entry)
+    print("Recorded node reconsideration in decision tree and experiment log.")
+
+    if args.update_handoff:
+        append(AGENT_DIR / "handoff.md", entry)
+        print("Updated .agent/handoff.md")
+
+    if args.checkout_target:
+        run(["git", "checkout", args.checkout_target])
+        print(f"Checked out {args.checkout_target}")
+
+
 def cmd_triage(args: argparse.Namespace) -> None:
     ensure_agent_files()
     entry = f"""
@@ -522,6 +555,29 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--decision")
     p.add_argument("--checkout", action="store_true")
     p.set_defaults(func=cmd_backtrack)
+
+    p = sub.add_parser("reconsider", help="Return experiment evidence to a decision node and record the next action")
+    p.add_argument("--node", required=True)
+    p.add_argument("--from-experiment")
+    p.add_argument("--returned-evidence", required=True)
+    p.add_argument("--interpretation", required=True)
+    p.add_argument("--decision", required=True, choices=[
+        "retry_current",
+        "switch_sibling",
+        "split_node",
+        "backtrack_parent",
+        "backtrack_single_factor",
+        "advance_next_node",
+        "repair_measurement",
+        "redesign_validation",
+        "isolate_regression",
+        "ask_external_info",
+    ])
+    p.add_argument("--continue-to", required=True, help="Target node, sibling hypothesis, checkpoint, branch, or stop condition")
+    p.add_argument("--next", required=True, help="Concrete next action after revisiting the node")
+    p.add_argument("--update-handoff", action="store_true")
+    p.add_argument("--checkout-target", help="Optional branch or commit to checkout after recording")
+    p.set_defaults(func=cmd_reconsider)
 
     p = sub.add_parser("triage", help="Record research triage level before prior-art scouting")
     p.add_argument("--level", choices=["R0", "R1", "R2", "R3"], required=True)

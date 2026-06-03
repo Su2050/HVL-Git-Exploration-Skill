@@ -55,7 +55,7 @@ AGENTS.md                                      # 给 Codex / 通用 Agent 的总
 .agent/*                                      # 计划、假设、实验、交接、适配性判断等状态文件模板
 docs/*                                        # 正式介绍、适用范围、方法论、Git 工作流、科研/RL/元学习指南
 templates/*                                   # 可复制的提示词、commit 模板、实验记录模板
-scripts/hvl.py                                # 可执行辅助脚本：init/start/record/checkpoint/backtrack/status
+scripts/hvl.py                                # 可执行辅助脚本：init/start/record/reconsider/checkpoint/backtrack/status
 .githooks/*                                   # Git hooks：提醒 AI 记录实验和使用结构化 commit
 examples/*                                    # 复杂任务示例：RL 自动插取/叉取、元学习等
 ```

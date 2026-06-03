@@ -21,7 +21,8 @@ Rules:
 10. After each experiment, run validation and update .agent/experiment-log.md.
 11. For benchmark/evaluation/scoring-heavy failures, audit measurement first and record .agent/measurement-audit.md when relevant.
 12. If validation fails, classify the failure before changing code again.
-13. Update .agent/handoff.md before stopping.
+13. Return experiment evidence to the active decision node and record the node reconsideration before retrying, switching, splitting, advancing, or backtracking.
+14. Update .agent/handoff.md before stopping.
 
 Do not claim success without validation evidence.
 ```
